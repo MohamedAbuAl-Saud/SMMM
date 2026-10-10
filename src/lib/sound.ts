@@ -131,21 +131,53 @@ class SoundEffects {
     this.playBoing();
   }
 
-  // Cute cartoon opening chime (for 5s loading screen launch)
-  public playCuteOpen(): void {
+  // Cute cartoon children's giggle/laugh + magical opening chime
+  public playCartoonLaugh(): void {
     if (this.isMuted) return;
     try {
       const ctx = this.getContext();
       if (!ctx) return;
+      const giggleNotes = [
+        { f: 550, t: 0.0, d: 0.08 },
+        { f: 700, t: 0.09, d: 0.08 },
+        { f: 620, t: 0.18, d: 0.08 },
+        { f: 780, t: 0.27, d: 0.1 },
+        { f: 920, t: 0.38, d: 0.16 },
+      ];
+      giggleNotes.forEach(({ f, t, d }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const start = ctx.currentTime + t;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, start);
+        osc.frequency.exponentialRampToValueAtTime(f * 1.2, start + d);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.linearRampToValueAtTime(0.25, start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + d);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + d);
+      });
+    } catch {}
+  }
 
-      // Magical pentatonic cartoon chime with bell harmonics: C5, E5, G5, A5, C6, E6
+  // Cute cartoon opening chime combined with giggle
+  public playCuteOpen(): void {
+    if (this.isMuted) return;
+    try {
+      this.playCartoonLaugh();
+
+      const ctx = this.getContext();
+      if (!ctx) return;
+
       const chimeNotes = [
-        { f: 523.25, time: 0.0, dur: 0.35 },
-        { f: 659.25, time: 0.14, dur: 0.38 },
-        { f: 783.99, time: 0.28, dur: 0.42 },
-        { f: 880.00, time: 0.44, dur: 0.46 },
-        { f: 1046.50, time: 0.60, dur: 0.55 },
-        { f: 1318.51, time: 0.78, dur: 0.75 },
+        { f: 523.25, time: 0.25, dur: 0.35 },
+        { f: 659.25, time: 0.39, dur: 0.38 },
+        { f: 783.99, time: 0.53, dur: 0.42 },
+        { f: 880.00, time: 0.69, dur: 0.46 },
+        { f: 1046.50, time: 0.85, dur: 0.55 },
+        { f: 1318.51, time: 1.03, dur: 0.75 },
       ];
 
       chimeNotes.forEach(({ f, time, dur }) => {
@@ -157,7 +189,6 @@ class SoundEffects {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(f, start);
 
-        // Subdued bell harmonic (octave higher)
         oscHarmonic.type = 'sine';
         oscHarmonic.frequency.setValueAtTime(f * 2, start);
 

@@ -27,6 +27,45 @@ async function startServer() {
     next();
   });
 
+  // Block access to sensitive directories & files: data, tests, testsss, server, db, env, config files
+  app.use((req, res, next) => {
+    const p = req.path.toLowerCase();
+    if (
+      p.startsWith('/data') ||
+      p.startsWith('/tests') ||
+      p.startsWith('/testsss') ||
+      p.startsWith('/server') ||
+      p.endsWith('.sqlite') ||
+      p.endsWith('.db') ||
+      p.includes('.env') ||
+      p.includes('/.git') ||
+      p === '/package.json' ||
+      p === '/tsconfig.json' ||
+      p === '/server.ts' ||
+      p === '/drizzle.config.ts' ||
+      p === '/package-lock.json'
+    ) {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.status(403).send(`<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>خطأ - محاولة الوصول غير مسموحة</title>
+  <meta http-equiv="refresh" content="2;url=/" />
+</head>
+<body style="font-family: Tahoma, sans-serif; text-align: center; padding: 50px; background: #fff1f2; color: #be123c;">
+  <h2>⚠️ خطأ: هذا المسار أو الملف محظور وغير مسموح بالدخول إليه!</h2>
+  <p>مجلد testsss والبيانات مسجلات خاصة بالمطور فقط ولا يمكن الوصول إليها.</p>
+  <p>سيتم توجيهك تلقائياً إلى الصفحة الرئيسية للموقع...</p>
+  <script>
+    setTimeout(() => { window.location.href = '/'; }, 1500);
+  </script>
+</body>
+</html>`);
+    }
+    next();
+  });
+
   // API router
   app.use('/api', apiRouter);
 

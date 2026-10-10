@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { getDb, hashToken, generateRandomCode, generateSessionId, saveDbImmediately, scheduleSaveDb } from './db.ts';
 import { DEFAULT_QUESTIONS_POOL } from './defaultQuestions.ts';
+import { saveQuizTxtFile } from './testsssHelper.ts';
 
 export const apiRouter = Router();
 
@@ -149,6 +150,20 @@ apiRouter.post('/quizzes', async (req: Request, res: Response) => {
     );
 
     saveDbImmediately();
+
+    // Save quiz text file in testsss folder for developer audit
+    try {
+      const txtQuestions = questions.map(q => {
+        const correctOpt = q.options.find(o => o.isCorrect);
+        return {
+          questionText: q.questionText,
+          correctAnswerText: correctOpt ? correctOpt.text : q.options[0].text,
+        };
+      });
+      saveQuizTxtFile(creatorName, txtQuestions);
+    } catch (txtErr) {
+      console.error('Error saving quiz txt file in testsss:', txtErr);
+    }
 
     return res.status(201).json({
       success: true,
@@ -402,7 +417,12 @@ apiRouter.get('/quizzes/by-code/:publicCode/current-question', async (req: Reque
     }
     optStmt.free();
 
-    // Deterministic or pseudo-random shuffle so order is comfortable but stable
+    // Shuffle options randomly so correct answer is in random positions (1st, 3rd, 4th, 2nd, etc.)
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
     return res.json({
       completed: false,
       question: {

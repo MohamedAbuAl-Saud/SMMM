@@ -12,13 +12,7 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage.tsx';
 import { TermsPage } from './pages/TermsPage.tsx';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const seen = sessionStorage.getItem('bestie_seen_splash');
-      return !seen;
-    }
-    return true;
-  });
+  const [showSplash, setShowSplash] = useState<boolean>(true);
 
   const [currentView, setCurrentView] = useState<string>('home');
   const [viewParam, setViewParam] = useState<string>('');
@@ -47,7 +41,6 @@ export default function App() {
   }, []);
 
   const handleFinishSplash = () => {
-    sessionStorage.setItem('bestie_seen_splash', 'true');
     setShowSplash(false);
   };
 
