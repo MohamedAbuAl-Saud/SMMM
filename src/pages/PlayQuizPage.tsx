@@ -6,7 +6,8 @@ import {
   CuteBunny,
   FluffyCloud,
   CartoonStar,
-  CartoonPencil
+  CartoonPencil,
+  CartoonAvatar
 } from '../components/CartoonIllustrations.tsx';
 import { Logo } from '../components/Logo.tsx';
 import { sound } from '../lib/sound.ts';
@@ -28,6 +29,13 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
     totalParticipants: number;
     optionalGender?: string;
   } | null>(null);
+
+  const [leaderboardPreview, setLeaderboardPreview] = useState<Array<{
+    id: number;
+    displayName: string;
+    score: number;
+    completedAt: string;
+  }>>([]);
 
   // Check if current device is the creator
   const [isCreator, setIsCreator] = useState<boolean>(false);
@@ -70,6 +78,16 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
       }
       const data = await res.json();
       setQuizInfo(data);
+
+      // Also fetch public leaderboard preview for friendly scoreboard display
+      try {
+        const lbRes = await fetch(`/api/quizzes/by-code/${publicCode}/leaderboard`);
+        if (lbRes.ok) {
+          const lbData = await lbRes.json();
+          setLeaderboardPreview(lbData.participants || []);
+        }
+      } catch {}
+
       checkCurrentQuestion();
     } catch (err) {
       console.error(err);
@@ -260,7 +278,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
 
         {stage === 'error' && (
           <div className="bg-white rounded-3xl p-8 text-center border-2 border-rose-200 shadow-xl">
-            <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 mx-auto flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-rose-100 ring-4 ring-rose-200 text-rose-600 mx-auto flex items-center justify-center mb-4 shadow-sm">
               <AlertCircle className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-black text-slate-900 mb-2">يا خسارة!</h3>
@@ -292,8 +310,9 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
             {/* CREATOR DETECTED: NOT ALLOWED TO TAKE OWN TEST */}
             {isCreator ? (
               <div className="mb-6">
-                <div className="bg-amber-50 border-2 border-amber-300 p-5 rounded-2xl text-amber-950 font-black text-sm mb-6 leading-relaxed">
-                  «أنت صاحب الاختبار يا فنان! 😊 مينفعش تحل اختبارك بنفسك عشان عارف الإجابات الصح! ابعت الرابط لصحابك وشوف مين هيجيب أعلى سكور!»
+                <div className="bg-amber-50 border-2 border-amber-300 p-5 rounded-2xl text-amber-950 font-black text-sm mb-6 leading-relaxed flex items-center justify-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                  <span>«أنت صاحب الاختبار يا فنان! مينفعش تحل اختبارك بنفسك عشان عارف الإجابات الصح! ابعت الرابط لصحابك وشوف مين هيجيب أعلى سكور!»</span>
                 </div>
 
                 <div className="space-y-3 max-w-sm mx-auto">
@@ -351,35 +370,99 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
             ) : (
               /* FRIEND DETECTED: CAN PLAY THE TEST */
               <>
-                <p className="text-base sm:text-lg text-sky-800 font-extrabold mb-8 leading-relaxed max-w-md mx-auto">
-                  «يلا ورّينا بقى، إحنا فعلًا صحاب وحبايب وبنعرف بعض قد إيه؟»
-                </p>
+                {/* Bear Character in box corner with white background */}
+                <div className="relative bg-gradient-to-br from-sky-50 to-pink-50 rounded-3xl p-6 sm:p-7 border-2 border-sky-200 shadow-inner mb-6 text-center overflow-hidden">
+                  {/* Bubu bear in corner with white background */}
+                  <div className="absolute top-2 left-2 w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl p-1.5 shadow-md border-2 border-sky-100 flex items-center justify-center">
+                    <img
+                      src="https://block.youtest.me/static/assets/img/player/home/character-bubu.webp"
+                      alt="Bubu"
+                      className="w-full h-full object-contain select-none drop-shadow-xs"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
 
-                <div className="flex items-center justify-center gap-4 text-xs font-bold text-sky-700 bg-sky-50 py-2.5 px-4 rounded-2xl mb-8 border border-sky-200 max-w-xs mx-auto">
-                  <span className="flex items-center gap-1 font-black">
-                    <Users className="w-4 h-4 text-sky-500" />
-                    <span>في {quizInfo.totalParticipants} من الصحاب حلوا الاختبار</span>
-                  </span>
+                  <p className="text-base sm:text-lg text-sky-950 font-black leading-relaxed max-w-sm mx-auto pr-14 pl-2 font-['Cairo']">
+                    «يلا ورينا بقا فعلا احنا صحاب وحبايب ومهتمين بيا ولا لا؟»
+                  </p>
+
+                  <div className="flex items-center justify-center gap-2 text-xs font-black text-sky-700 bg-white/90 py-1.5 px-3 rounded-full mt-3 border border-sky-200 max-w-xs mx-auto shadow-xs">
+                    <Users className="w-3.5 h-3.5 text-pink-500" />
+                    <span>في {quizInfo.totalParticipants} من الصحاب دخلوا التحدي</span>
+                  </div>
                 </div>
 
-                <div className="space-y-3 max-w-sm mx-auto">
+                {/* Big 3D Start Button */}
+                <div className="max-w-sm mx-auto mb-8">
                   <button
                     onClick={handleStartClicked}
-                    className="w-full py-4 bg-gradient-to-b from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 active:translate-y-0.5 text-white text-lg font-black rounded-2xl shadow-[0_6px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-gradient-to-b from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 active:translate-y-0.5 text-white text-lg font-black rounded-2xl shadow-[0_6px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2 group"
                   >
-                    <span>ابدأ التحدي يا بطل</span>
+                    <span>ابدأ الاختبار الآن يا بطل</span>
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                   </button>
+                </div>
 
-                  <button
-                    onClick={() => {
-                      sound.playPop();
-                      onNavigate('leaderboard', publicCode);
-                    }}
-                    className="w-full py-3 bg-amber-50 hover:bg-amber-100 text-amber-800 font-black rounded-2xl border border-amber-200 transition-colors cursor-pointer text-xs flex items-center justify-center gap-1.5"
-                  >
-                    <Trophy className="w-4 h-4 text-amber-600" />
-                    <span>شوف مين المتصدرين قبلك</span>
-                  </button>
+                {/* Embedded Scoreboard below start button */}
+                <div className="bg-sky-50/70 rounded-3xl p-5 border-2 border-sky-200 text-right">
+                  <div className="flex items-center justify-between mb-4 pb-2 border-b border-sky-200">
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-amber-500" />
+                      <h3 className="font-black text-sky-950 text-sm sm:text-base">لوحة درجات المتصدرين</h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        sound.playPop();
+                        onNavigate('leaderboard', publicCode);
+                      }}
+                      className="text-xs font-black text-sky-600 hover:text-sky-800 hover:underline cursor-pointer"
+                    >
+                      عرض الكل
+                    </button>
+                  </div>
+
+                  {leaderboardPreview.length === 0 ? (
+                    <div className="text-center py-6 bg-white rounded-2xl border border-sky-100">
+                      <img
+                        src="https://block.youtest.me/static/assets/img/user/scoreboard/dudu.webp"
+                        alt="لسه مفيش مشاركين"
+                        className="w-20 h-20 object-contain mx-auto mb-2 opacity-90"
+                      />
+                      <p className="text-xs font-bold text-sky-900 mb-1">لسه مفيش حد حل قبلك!</p>
+                      <p className="text-[11px] font-black text-pink-600">كن أول المشاركين واقفل الـ 20/20!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {leaderboardPreview.slice(0, 5).map((item, idx) => (
+                        <div
+                          key={item.id}
+                          className="bg-white rounded-2xl p-3 border border-sky-100 flex items-center justify-between gap-2 shadow-xs"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className={`w-7 h-7 rounded-full text-xs font-black flex items-center justify-center border shadow-xs ${
+                              idx === 0
+                                ? 'bg-amber-400 text-amber-950 border-amber-500'
+                                : idx === 1
+                                ? 'bg-slate-200 text-slate-800 border-slate-300'
+                                : idx === 2
+                                ? 'bg-amber-700 text-white border-amber-800'
+                                : 'bg-sky-100 text-sky-800 border-sky-200'
+                            }`}>
+                              {idx + 1}
+                            </span>
+                            <CartoonAvatar index={idx} className="w-8 h-8" />
+                            <span className="font-black text-xs text-sky-950">{item.displayName}</span>
+                          </div>
+
+                          <div className="font-black text-xs text-sky-900 font-['Fredoka','Cairo']">
+                            {item.score} <span className="text-[10px] text-sky-500">/ 20</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </>
             )}
@@ -412,7 +495,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                 onKeyDown={e => {
                   if (e.key === 'Enter') handleSubmitName();
                 }}
-                placeholder="مثال: سما أو محمد"
+                placeholder="اكتب اسمك هنا (مثال: سما أو محمد)"
                 className="w-full px-4 py-3.5 text-center text-base font-black text-sky-950 bg-sky-50 border-2 border-sky-200 rounded-2xl focus:border-sky-500 focus:outline-none shadow-inner"
                 autoFocus
               />

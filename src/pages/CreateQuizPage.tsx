@@ -27,7 +27,12 @@ import {
   Eye,
   Trophy,
   Heart,
-  PlusCircle
+  PlusCircle,
+  ArrowDown,
+  HelpCircle,
+  Star,
+  BookOpen,
+  Search
 } from 'lucide-react';
 
 interface CreateQuizPageProps {
@@ -78,6 +83,11 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
   const [customQText, setCustomQText] = useState<string>('');
   const [customQCorrect, setCustomQCorrect] = useState<string>('');
   const [customQWrongs, setCustomQWrongs] = useState<string[]>(['', '', '']);
+
+  // 80 Question Bank Modal
+  const [showBankModal, setShowBankModal] = useState<boolean>(false);
+  const [bankSearch, setBankSearch] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('الكل');
 
   // Publishing
   const [publishing, setPublishing] = useState<boolean>(false);
@@ -156,12 +166,11 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
 
   const handleSkipQuestion = () => {
     sound.playPop();
-    const available = pool.filter(p => !usedQuestionIds.has(p.id));
-    if (available.length === 0) {
-      alert('خلصت كل الأسئلة الجاهزة يا بطل! تقدر تدوس "إضافة سؤال جديد" وتكتب سؤال من دماغك.');
-      return;
-    }
-    const nextQ = available[0];
+    const available = pool.filter(p => !usedQuestionIds.has(p.id) && p.text !== currentText);
+    const poolSource = available.length > 0 ? available : pool.filter(p => p.text !== currentText);
+    if (poolSource.length === 0) return;
+
+    const nextQ = poolSource[0];
     setCurrentText(nextQ.text);
     setCurrentOptions([...nextQ.defaultOptions]);
     setSelectedCorrectText(null);
@@ -169,6 +178,18 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     setQuestionPhase('pick_correct');
     setOptionSearch('');
     setUsedQuestionIds(prev => new Set(prev).add(nextQ.id));
+  };
+
+  const handlePickFromBank = (q: DefaultQuestion) => {
+    sound.playDing();
+    setCurrentText(q.text);
+    setCurrentOptions([...q.defaultOptions]);
+    setSelectedCorrectText(null);
+    setSelectedWrongTexts([]);
+    setQuestionPhase('pick_correct');
+    setOptionSearch('');
+    setUsedQuestionIds(prev => new Set(prev).add(q.id));
+    setShowBankModal(false);
   };
 
   const handleSelectCorrect = (optText: string) => {
@@ -245,6 +266,14 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     if (currentQIndex < 19) {
       setCurrentQIndex(currentQIndex + 1);
     } else {
+      sound.playFanfare();
+      try {
+        confetti({
+          particleCount: 75,
+          spread: 70,
+          origin: { y: 0.55 },
+        });
+      } catch {}
       setStep(4);
     }
   };
@@ -292,6 +321,14 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     if (currentQIndex < 19) {
       setCurrentQIndex(currentQIndex + 1);
     } else {
+      sound.playFanfare();
+      try {
+        confetti({
+          particleCount: 75,
+          spread: 70,
+          origin: { y: 0.55 },
+        });
+      } catch {}
       setStep(4);
     }
   };
@@ -437,7 +474,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 onKeyDown={e => {
                   if (e.key === 'Enter') handleProceedName();
                 }}
-                placeholder="مثال: سما أو محمد"
+                placeholder="اكتب اسمك هنا (مثال: سما أو محمد)"
                 className="w-full px-5 py-4 text-center text-lg font-black text-sky-950 bg-sky-50 border-2 border-sky-200 rounded-2xl focus:border-sky-500 focus:outline-none transition-colors shadow-inner"
                 autoFocus
               />
@@ -457,52 +494,70 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
           </div>
         )}
 
-        {/* Step 2: Info (Sama vs Mohamed) */}
+        {/* Step 2: Gender Selection with requested female.webp & male.webp */}
         {step === 2 && (
           <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-sky-100 text-center animate-scale-up">
-            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2">
-              شخصيتك ايه؟
+            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2 font-['Cairo']">
+              اختر النوع
             </h2>
             <p className="text-sm text-sky-700 font-bold mb-8">
-              اختر مظهر شخصيتك الكرتونية (سما أو محمد)
+              اختر ذكر أو أنثى لتخصيص كروت وتجربة اللعب
             </p>
 
-            {/* Sama & Mohamed Gender Selection Cards */}
+            {/* Female and Male Selection Cards with white background and provided assets */}
             <div className="grid grid-cols-2 gap-5 max-w-md mx-auto mb-8">
-              {/* Sama Card */}
+              {/* Female Card */}
               <button
                 type="button"
                 onClick={() => {
                   sound.playDing();
                   setOptionalGender('female');
                 }}
-                className={`p-5 rounded-3xl border-3 transition-all flex flex-col items-center cursor-pointer ${
+                className={`p-5 rounded-3xl border-3 transition-all flex flex-col items-center cursor-pointer bg-white ${
                   optionalGender === 'female'
-                    ? 'border-pink-500 bg-pink-50 shadow-lg scale-102 ring-4 ring-pink-200'
-                    : 'border-slate-200 bg-white hover:border-pink-300'
+                    ? 'border-pink-500 shadow-xl scale-102 ring-4 ring-pink-200 bg-pink-50/30'
+                    : 'border-slate-200 hover:border-pink-300 shadow-sm'
                 }`}
               >
-                <SamaCharacter className="w-20 h-20 mb-2 drop-shadow-sm" />
-                <span className="font-black text-base text-pink-700">سما 👧🏻 (بنت)</span>
-                <span className="text-xs text-pink-500 font-bold mt-1">كيوت وقمورة</span>
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-2 flex items-center justify-center mb-2 shadow-xs">
+                  <img
+                    src="https://block.youtest.me/static/assets/img/user/name/female.webp"
+                    alt="أنثى"
+                    className="w-full h-full object-contain select-none"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+                <span className="font-black text-base sm:text-lg text-pink-700">أنثى</span>
+                <span className="text-xs text-pink-500 font-bold mt-1">بنت قمورة</span>
               </button>
 
-              {/* Mohamed Card */}
+              {/* Male Card */}
               <button
                 type="button"
                 onClick={() => {
                   sound.playDing();
                   setOptionalGender('male');
                 }}
-                className={`p-5 rounded-3xl border-3 transition-all flex flex-col items-center cursor-pointer ${
+                className={`p-5 rounded-3xl border-3 transition-all flex flex-col items-center cursor-pointer bg-white ${
                   optionalGender === 'male'
-                    ? 'border-sky-500 bg-sky-50 shadow-lg scale-102 ring-4 ring-sky-200'
-                    : 'border-slate-200 bg-white hover:border-sky-300'
+                    ? 'border-sky-500 shadow-xl scale-102 ring-4 ring-sky-200 bg-sky-50/30'
+                    : 'border-slate-200 hover:border-sky-300 shadow-sm'
                 }`}
               >
-                <MohamedCharacter className="w-20 h-20 mb-2 drop-shadow-sm" />
-                <span className="font-black text-base text-sky-700">محمد 👦🏻 (ولد)</span>
-                <span className="text-xs text-sky-500 font-bold mt-1">فرفوش وبطل</span>
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-2 flex items-center justify-center mb-2 shadow-xs">
+                  <img
+                    src="https://block.youtest.me/static/assets/img/user/name/male.webp"
+                    alt="ذكر"
+                    className="w-full h-full object-contain select-none"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+                <span className="font-black text-base sm:text-lg text-sky-700">ذكر</span>
+                <span className="text-xs text-sky-500 font-bold mt-1">ولد فرفوش</span>
               </button>
             </div>
 
@@ -570,8 +625,40 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
             <div className="bg-white rounded-b-3xl p-5 sm:p-8 border-2 border-amber-200 shadow-xl relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(#0284c7_1px,transparent_1px)] bg-[size:100%_28px]" />
 
-              {/* Question Text */}
+              {/* Question Text & Swap Toolbar */}
               <div className="mb-4 relative z-10 text-center">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2 px-1">
+                  <span className="text-[11px] font-black text-amber-900 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-300 shadow-xs flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+                    <span>بنك الأسئلة: {pool.length || 80} سؤال متاح</span>
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sound.playPop();
+                        setShowBankModal(true);
+                      }}
+                      className="text-xs font-black text-sky-950 hover:text-white bg-sky-200 hover:bg-sky-600 px-3.5 py-1.5 rounded-full border border-sky-400 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
+                      title="تصفح بنك الأسئلة (80 سؤال) واختار اللي يعجبك"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>اختر من الـ 80 سؤال</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleSkipQuestion}
+                      className="text-xs font-black text-amber-950 hover:text-white bg-amber-200 hover:bg-amber-600 px-3.5 py-1.5 rounded-full border border-amber-400 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
+                      title="السؤال مش عاجبك؟ اضغط لتبديله بسؤال تاني فوراً!"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>مش عاجبك؟ بدّل السؤال</span>
+                    </button>
+                  </div>
+                </div>
+
                 <h3 className="text-xl sm:text-2xl font-black text-sky-950 leading-relaxed font-['Cairo']">
                   {currentText}
                 </h3>
@@ -582,12 +669,15 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 {questionPhase === 'pick_correct' ? (
                   <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-950 px-4 py-2 rounded-full text-xs sm:text-sm font-black border border-emerald-300 shadow-xs">
                     <Check className="w-4 h-4 text-emerald-600" />
-                    <span>الخطوة 1: اختار إجابتك الحقيقية من الـ 20 اختيار اللي تحت دول 👇</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      الخطوة 1: اختار إجابتك الحقيقية من الـ 20 اختيار المتاحة بالأسفل
+                      <ArrowDown className="w-3.5 h-3.5 text-emerald-600 animate-bounce" />
+                    </span>
                   </div>
                 ) : (
                   <div className="inline-flex items-center gap-2 bg-pink-100 text-pink-950 px-4 py-2 rounded-full text-xs sm:text-sm font-black border border-pink-300 shadow-xs">
                     <AlertCircle className="w-4 h-4 text-pink-600" />
-                    <span>الخطوة 2: اختار 3 إجابات غلط عشان نلخبط بيهم صحابك! ({selectedWrongTexts.length} من 3 محددين)</span>
+                    <span>الخطوة 2: اختار 3 إجابات غلط يظهرو جنب الصح في الاربع اختيارات للسؤال اللي هيظهر لصحابك عشان نلخبطهم بيهم ! ({selectedWrongTexts.length} من 3 محددين)</span>
                   </div>
                 )}
               </div>
@@ -651,8 +741,9 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                         className="p-3.5 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-emerald-950 font-black text-xs sm:text-sm flex items-center justify-between shadow-xs opacity-95"
                       >
                         <span className="flex-1">{optText}</span>
-                        <span className="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full mr-2">
-                          إجابتك الصح ✓
+                        <span className="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full mr-2 inline-flex items-center gap-1 shadow-xs">
+                          <span>إجابتك الصح</span>
+                          <Check className="w-3 h-3 stroke-[3]" />
                         </span>
                       </div>
                     );
@@ -689,20 +780,32 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 <button
                   type="button"
                   onClick={() => setShowAddOptionModal(true)}
-                  className="text-xs font-bold text-sky-700 hover:text-sky-900 bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-xl transition-colors cursor-pointer flex items-center gap-1"
+                  className="text-xs font-black text-sky-800 hover:text-white bg-sky-100 hover:bg-sky-600 border border-sky-300 px-3.5 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>إضافة اختيار تاني</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sound.playPop();
+                      setShowBankModal(true);
+                    }}
+                    className="text-xs font-black text-sky-950 hover:text-white bg-sky-200 hover:bg-sky-600 border border-sky-400 px-3.5 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>اختر من الـ 80 سؤال</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={handleSkipQuestion}
-                    className="text-xs font-bold text-amber-800 hover:text-amber-950 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-xl transition-colors cursor-pointer flex items-center gap-1"
+                    className="text-xs font-black text-amber-900 hover:text-white bg-amber-100 hover:bg-amber-500 border border-amber-300 px-3.5 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    <span>تخطي السؤال ده</span>
+                    <span>بدّل السؤال</span>
                   </button>
 
                   <button
@@ -711,7 +814,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                       sound.playPop();
                       setShowCustomQuestionModal(true);
                     }}
-                    className="text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl transition-colors cursor-pointer flex items-center gap-1"
+                    className="text-xs font-black text-purple-900 hover:text-white bg-purple-100 hover:bg-purple-600 border border-purple-300 px-3.5 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 shadow-xs active:scale-95"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>اكتب سؤالك بنفسك</span>
@@ -736,7 +839,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                     onClick={handleConfirmCorrect}
                     className={`flex-1 py-3.5 rounded-2xl font-black text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${
                       selectedCorrectText
-                        ? 'bg-sky-500 hover:bg-sky-600 text-white shadow-[0_4px_0_#0284c7] cursor-pointer'
+                        ? 'bg-sky-500 hover:bg-sky-600 text-white btn-3d-sky cursor-pointer'
                         : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                     }`}
                   >
@@ -750,7 +853,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                     onClick={handleSaveQuestionAndNext}
                     className={`flex-1 py-3.5 rounded-2xl font-black text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${
                       selectedWrongTexts.length === 3
-                        ? 'bg-sky-500 hover:bg-sky-600 text-white shadow-[0_4px_0_#0284c7] cursor-pointer'
+                        ? 'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white btn-3d-pink cursor-pointer'
                         : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                     }`}
                   >
@@ -758,6 +861,112 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                 )}
+              </div>
+            </div>
+
+            {/* Cute Egyptian Guide Box with 3D Cartoon Animation */}
+            <div className="mt-6 bg-gradient-to-br from-amber-50 via-white to-sky-50 rounded-3xl p-5 sm:p-7 border-3 border-amber-200/90 shadow-[0_12px_28px_rgba(245,158,11,0.12)] relative overflow-hidden transition-all">
+              {/* Background 3D Cartoon Accents */}
+              <div className="absolute top-2 left-3 opacity-25 pointer-events-none">
+                <CartoonStar className="w-12 h-12" />
+              </div>
+              <div className="absolute bottom-1 right-2 opacity-20 pointer-events-none">
+                <FluffyCloud className="w-20 h-14" />
+              </div>
+
+              {/* Header with 3D Mascot & Speech Bubble */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-5 relative z-10">
+                {/* 3D Animated Cute Mascot in Circular Frame */}
+                <div className="flex-shrink-0 relative group">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-full p-2.5 shadow-lg border-2 border-amber-300 ring-4 ring-amber-100 flex items-center justify-center transform transition-transform group-hover:scale-105 group-hover:-rotate-3 duration-300">
+                    <CuteBear className="w-full h-full animate-bounce-short" mood="celebrate" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 bg-pink-500 text-white p-1 rounded-full shadow-xs">
+                    <Heart className="w-3.5 h-3.5 fill-white" />
+                  </div>
+                </div>
+
+                {/* Speech Bubble */}
+                <div className="flex-1 text-center sm:text-right">
+                  <div className="inline-flex items-center gap-2 bg-amber-200 text-amber-950 px-3.5 py-1 rounded-full text-xs font-black border border-amber-300 mb-2 shadow-xs">
+                    <HelpCircle className="w-3.5 h-3.5 text-amber-700" />
+                    <span>دليل الصاحب الجدع • طريقة إنشاء السؤال</span>
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-black text-sky-950 font-['Cairo'] mb-1">
+                    مش عارف تعمل إيه يا فنان؟ بص يا سيدي الموضوع أسهل مما تتخيل!
+                  </h4>
+                  <p className="text-xs sm:text-sm text-sky-800 font-bold leading-relaxed">
+                    ركز معايا في الكام نقطة دول وهتخلص الـ 20 سؤال بتوعك في دقيقتين وتبقى برنس:
+                  </p>
+                </div>
+              </div>
+
+              {/* The Egyptian Explanation Cards with Circular 3D Badges */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 relative z-10 text-right">
+                {/* Point 1: الصح والغلط */}
+                <div className="bg-white/95 rounded-2xl p-4 border-2 border-emerald-200 shadow-xs hover:border-emerald-400 hover:shadow-md transition-all flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-emerald-100 to-emerald-200 text-emerald-800 ring-2 ring-emerald-300 shadow-sm flex items-center justify-center font-black text-sm flex-shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <div className="text-xs leading-relaxed font-bold text-slate-800">
+                    <span className="font-black text-emerald-800 block text-sm mb-1">
+                      بص مبدئياً كدا (الصح والـ 3 غلط):
+                    </span>
+                    السؤال بيظهرلك، تختار الأول <strong className="text-emerald-700 font-black">إجابتك الصح</strong> من القائمة، وبعدها تختار <strong className="text-pink-600 font-black">3 إجابات غلط</strong> عشان يظهروا لصاحبك مع الإجابة الصح وهو بيحل ويختار من 4 اختيارات ونلخبطه بيهم!
+                  </div>
+                </div>
+
+                {/* Point 2: زرار النقل والتالي */}
+                <div className="bg-white/95 rounded-2xl p-4 border-2 border-sky-200 shadow-xs hover:border-sky-400 hover:shadow-md transition-all flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-sky-100 to-sky-200 text-sky-800 ring-2 ring-sky-300 shadow-sm flex items-center justify-center font-black text-sm flex-shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <div className="text-xs leading-relaxed font-bold text-slate-800">
+                    <span className="font-black text-sky-900 block text-sm mb-1">
+                      واضغط تم عشان تنقل للي بعده:
+                    </span>
+                    اضغط زرار <strong className="text-sky-700 font-black">«تم، اختار الـ 3 إجابات الغلط»</strong>، ولما تحدد التلاتة اضغط زرار <strong className="text-sky-700 font-black">«تم، انقل على السؤال اللي بعده»</strong> عشان تثبت السؤال وتدخل على السؤال اللي وراه علطول!
+                  </div>
+                </div>
+
+                {/* Point 3: اكتب سؤالك بنفسك */}
+                <div className="bg-white/95 rounded-2xl p-4 border-2 border-purple-200 shadow-xs hover:border-purple-400 hover:shadow-md transition-all flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-purple-100 to-purple-200 text-purple-800 ring-2 ring-purple-300 shadow-sm flex items-center justify-center font-black text-sm flex-shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <div className="text-xs leading-relaxed font-bold text-slate-800">
+                    <span className="font-black text-purple-900 block text-sm mb-1">
+                      واضغط «اكتب سؤالك بنفسك»:
+                    </span>
+                    لو مفيش ولا سؤال عاجبك من الأسئلة الجاهزة، اضغط على زرار <strong className="text-purple-700 font-black">«اكتب سؤالك بنفسك»</strong> واكتب أي سؤال فرفوش يخطر على بالك من دماغك وحدد اختياراته براحتك!
+                  </div>
+                </div>
+
+                {/* Point 4: إضافة اختيار تاني */}
+                <div className="bg-white/95 rounded-2xl p-4 border-2 border-indigo-200 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-indigo-100 to-indigo-200 text-indigo-800 ring-2 ring-indigo-300 shadow-sm flex items-center justify-center font-black text-sm flex-shrink-0 mt-0.5">
+                    4
+                  </div>
+                  <div className="text-xs leading-relaxed font-bold text-slate-800">
+                    <span className="font-black text-indigo-900 block text-sm mb-1">
+                      واضغط «إضافة اختيار تاني»:
+                    </span>
+                    لو ملقتش الإجابة اللي في بالك وسط الـ 20 اختيار، اضغط على زرار <strong className="text-indigo-700 font-black">«إضافة اختيار تاني»</strong> واكتب إجابتك الخاصة عشان تضاف للقائمة وتختارها فوراً!
+                  </div>
+                </div>
+
+                {/* Point 5: تبديل السؤال الفوري */}
+                <div className="bg-white/95 rounded-2xl p-4 border-2 border-amber-200 shadow-xs hover:border-amber-400 hover:shadow-md transition-all flex items-start gap-3 md:col-span-2">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-b from-amber-100 to-amber-200 text-amber-800 ring-2 ring-amber-300 shadow-sm flex items-center justify-center font-black text-sm flex-shrink-0 mt-0.5">
+                    5
+                  </div>
+                  <div className="text-xs leading-relaxed font-bold text-slate-800">
+                    <span className="font-black text-amber-900 block text-sm mb-1">
+                      واضغط «مش عاجبك؟ بدّل السؤال»:
+                    </span>
+                    لو السؤال الحالي مش جاي على هواك أو مش لايق عليك، اضغط فوق أو تحت على زرار <strong className="text-amber-700 font-black">«مش عاجبك؟ بدّل السؤال»</strong> أو زرار <strong className="text-sky-700 font-black">«اختر من الـ 80 سؤال»</strong> وهيبدلهولك فوراً بسؤال تاني جديد من بنك الأسئلة المليان 80 سؤال مختلف بكل سؤال 20 اختيار جاهز في قاعدة البيانات!
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -774,15 +983,15 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
             <Logo size="md" showText={false} className="justify-center mb-3" />
 
             <h2 className="text-3xl font-black text-sky-950 mb-2 font-['Cairo']">
-              اختبارك جاهز أخيرًا يا فنان!
+              اختبارك جاهز أخيرًا تعبتنا معاك!
             </h2>
-            <p className="text-base text-sky-800 font-black max-w-md mx-auto mb-6 leading-relaxed">
-              يلا بقى نشوف مين يعرفك بجد ومين محتاج يركز معاك أكتر! جهزنا الـ 20 سؤال بالتمام والكمال!
+            <p className="text-base text-sky-850 font-black max-w-md mx-auto mb-6 leading-relaxed">
+              يلا بقى عشان نشوف مين مش مهتم يا خويا أو يختي ومين صاحبك الجدع بجد! جهزنا الـ 20 سؤال بالتمام والكمال!
             </p>
 
             <div className="flex items-center justify-center gap-1.5 text-xs text-sky-850 font-black mb-6">
               <span className="text-pink-500 text-sm font-extrabold">©</span>
-              <span>محمد أبو السعود &amp; Sama</span>
+              <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
             </div>
 
             {publishError && (
@@ -1053,6 +1262,152 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal: 80 Questions Bank Browser */}
+      {showBankModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border-2 border-sky-200 animate-scale-up">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-black text-sky-950 font-['Cairo']">
+                    بنك الأسئلة ({pool.length || 80} سؤال مختلف)
+                  </h3>
+                  <p className="text-xs text-sky-600 font-bold">
+                    كل سؤال يحتوي على 20 اختيار متاح للتبديل والتخصيص
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowBankModal(false)}
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="pt-3 pb-2">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={bankSearch}
+                  onChange={e => setBankSearch(e.target.value)}
+                  placeholder="ابحث في الأسئلة أو التصنيفات أو الاختيارات..."
+                  className="w-full pr-10 pl-4 py-2.5 text-xs sm:text-sm font-bold bg-slate-50 border-2 border-slate-200 rounded-full focus:border-sky-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Categories filter */}
+            <div className="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-none text-xs font-bold">
+              {['الكل', ...Array.from(new Set(pool.map(q => q.category))).filter(Boolean)].map(cat => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => {
+                    sound.playPop();
+                    setSelectedCategory(cat);
+                  }}
+                  className={`px-3 py-1 rounded-full whitespace-nowrap transition-all cursor-pointer ${
+                    selectedCategory === cat
+                      ? 'bg-sky-500 text-white font-black shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Questions List */}
+            <div className="flex-1 overflow-y-auto pr-1 pl-1 space-y-2.5 my-3 max-h-[50vh]">
+              {pool
+                .filter(q => {
+                  const matchesCat = selectedCategory === 'الكل' || q.category === selectedCategory;
+                  const matchesSearch =
+                    !bankSearch.trim() ||
+                    q.text.toLowerCase().includes(bankSearch.toLowerCase()) ||
+                    q.category.toLowerCase().includes(bankSearch.toLowerCase()) ||
+                    q.defaultOptions.some(opt => opt.toLowerCase().includes(bankSearch.toLowerCase()));
+                  return matchesCat && matchesSearch;
+                })
+                .map((q, idx) => {
+                  const isCurrent = q.text === currentText;
+                  return (
+                    <div
+                      key={q.id || idx}
+                      onClick={() => handlePickFromBank(q)}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 text-right ${
+                        isCurrent
+                          ? 'border-emerald-400 bg-emerald-50/70 shadow-xs'
+                          : 'border-slate-200 hover:border-sky-300 hover:bg-sky-50/50'
+                      }`}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-black bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full border border-amber-200">
+                            {q.category}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400">
+                            #{idx + 1}
+                          </span>
+                          {isCurrent && (
+                            <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                              السؤال الحالي المعروض
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-xs sm:text-sm font-black text-slate-900 leading-snug">
+                          {q.text}
+                        </h4>
+                        <div className="text-[11px] text-slate-500 font-semibold mt-1">
+                          {q.defaultOptions.length} اختيار متاح للاختيار والتبديل
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={e => {
+                          e.stopPropagation();
+                          handlePickFromBank(q);
+                        }}
+                        className={`text-xs font-black px-3.5 py-2 rounded-full transition-all cursor-pointer flex-shrink-0 ${
+                          isCurrent
+                            ? 'bg-emerald-600 text-white'
+                            : 'bg-sky-500 hover:bg-sky-600 text-white active:scale-95'
+                        }`}
+                      >
+                        {isCurrent ? 'معروض حالياً' : 'اختر هذا السؤال'}
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+
+            {/* Footer */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-500 font-bold">
+                إجمالي الأسئلة في البنك: {pool.length || 80} سؤال
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowBankModal(false)}
+                className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs rounded-full cursor-pointer"
+              >
+                إغلاق
+              </button>
+            </div>
           </div>
         </div>
       )}

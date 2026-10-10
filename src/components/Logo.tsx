@@ -9,7 +9,7 @@ interface LogoProps {
 
 export function Logo({ className = '', size = 'md', showText = true }: LogoProps) {
   const [imgError, setImgError] = useState(false);
-  const logoUrl = 'https://cdn.imagetourls.com/uploads/tyImg/1gI6aNqsh.png';
+  const logoUrl = '/SM.jpg';
 
   const sizeClasses = {
     sm: 'w-10 h-10',

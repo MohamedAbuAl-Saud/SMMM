@@ -57,7 +57,7 @@ export function Footer({ onNavigate }: FooterProps) {
 
           <div className="flex items-center gap-2 font-black text-sky-800 tracking-wide text-xs bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200 shadow-xs">
             <span className="text-pink-500 font-extrabold text-sm">©</span>
-            <span>محمد أبو السعود &amp; Sama</span>
+            <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import {
 import { sound } from '../lib/sound.ts';
 import { LeaderboardEntry, StoredQuizItem } from '../lib/types.ts';
 import { Trophy, Medal, Share2, ArrowRight, Play, Copy, CheckCircle2, AlertCircle, PlusCircle, Eye } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface LeaderboardPageProps {
   publicCode: string;
@@ -54,6 +55,16 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
       const data = await res.json();
       setCreatorName(data.creatorName);
       setParticipants(data.participants || []);
+      if (data.participants && data.participants.length > 0) {
+        sound.playFanfare();
+        try {
+          confetti({
+            particleCount: 50,
+            spread: 70,
+            origin: { y: 0.5 },
+          });
+        } catch {}
+      }
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'تعذر جلب لوحة المتصدرين');
@@ -272,7 +283,7 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
                           : 'bg-sky-50 text-sky-800 border border-sky-200'
                       }`}
                     >
-                      {isFirst ? '🥇' : isSecond ? '🥈' : isThird ? '🥉' : `#${entry.rank}`}
+                      {entry.rank}
                     </div>
 
                     <CartoonAvatar index={idx} className="w-11 h-11 hidden sm:flex" />

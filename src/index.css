@@ -22,6 +22,20 @@
     50% { transform: translateY(-8px); }
   }
 
+  @keyframes float3D {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4), 0 0 30px rgba(244, 114, 182, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.75), 0 0 45px rgba(244, 114, 182, 0.45);
+    }
+  }
+
   .animate-shake {
     animation: shake 0.4s ease-in-out;
   }
@@ -36,6 +50,46 @@
 
   .animate-bounce-short {
     animation: bounceShort 2s infinite ease-in-out;
+  }
+
+  .animate-float-3d {
+    animation: float3D 3.5s infinite ease-in-out;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2.5s infinite ease-in-out;
+  }
+
+  /* 3D Cartoon Claymorphism & Tactile Button Classes */
+  .btn-3d-sky {
+    box-shadow: 0 5px 0 #0284c7, 0 8px 16px rgba(2, 132, 199, 0.25);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-3d-sky:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #0284c7, 0 3px 8px rgba(2, 132, 199, 0.2);
+  }
+
+  .btn-3d-pink {
+    box-shadow: 0 5px 0 #db2777, 0 8px 16px rgba(219, 39, 119, 0.25);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-3d-pink:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #db2777, 0 3px 8px rgba(219, 39, 119, 0.2);
+  }
+
+  .btn-3d-emerald {
+    box-shadow: 0 5px 0 #059669, 0 8px 16px rgba(5, 150, 105, 0.25);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-3d-emerald:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #059669, 0 3px 8px rgba(5, 150, 105, 0.2);
+  }
+
+  .badge-3d-circle {
+    box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 }
 

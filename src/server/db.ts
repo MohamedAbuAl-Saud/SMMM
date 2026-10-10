@@ -2,6 +2,7 @@ import initSqlJs, { Database } from 'sql.js';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { DEFAULT_QUESTIONS_POOL } from './defaultQuestions.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'bestie_check.sqlite');
@@ -32,8 +33,9 @@ export async function getDb(): Promise<Database> {
     dbInstance = new SQL.Database();
   }
 
-  // Initialize schema
+  // Initialize schema & question bank
   initSchema(dbInstance);
+  seedQuestionBank(dbInstance);
   saveDbImmediately();
 
   return dbInstance;
@@ -119,12 +121,51 @@ function initSchema(db: Database): void {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS bank_questions (
+      id TEXT PRIMARY KEY,
+      category TEXT NOT NULL,
+      question_text TEXT NOT NULL,
+      question_order INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS bank_options (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      question_id TEXT NOT NULL REFERENCES bank_questions(id) ON DELETE CASCADE,
+      option_text TEXT NOT NULL,
+      option_order INTEGER NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_quizzes_public_code ON quizzes(public_code);
     CREATE INDEX IF NOT EXISTS idx_questions_quiz_id ON quiz_questions(quiz_id);
     CREATE INDEX IF NOT EXISTS idx_options_question_id ON quiz_options(question_id);
     CREATE INDEX IF NOT EXISTS idx_participants_quiz_id ON participants(quiz_id);
     CREATE INDEX IF NOT EXISTS idx_participant_answers_participant_id ON participant_answers(participant_id);
+    CREATE INDEX IF NOT EXISTS idx_bank_options_question_id ON bank_options(question_id);
   `);
+}
+
+export function seedQuestionBank(db: Database): void {
+  try {
+    const res = db.exec("SELECT COUNT(*) FROM bank_questions");
+    const count = (res.length > 0 && res[0].values.length > 0) ? Number(res[0].values[0][0]) : 0;
+    if (count < 80) {
+      db.run("DELETE FROM bank_options; DELETE FROM bank_questions;");
+      const insertQ = db.prepare("INSERT INTO bank_questions (id, category, question_text, question_order) VALUES (?, ?, ?, ?)");
+      const insertOpt = db.prepare("INSERT INTO bank_options (question_id, option_text, option_order) VALUES (?, ?, ?)");
+      
+      DEFAULT_QUESTIONS_POOL.forEach((q, qIndex) => {
+        insertQ.run([q.id, q.category, q.text, qIndex + 1]);
+        q.defaultOptions.forEach((opt, optIndex) => {
+          insertOpt.run([q.id, opt, optIndex + 1]);
+        });
+      });
+      
+      insertQ.free();
+      insertOpt.free();
+    }
+  } catch (err) {
+    console.error("Error seeding question bank in SQLite DB:", err);
+  }
 }
 
 export function hashToken(token: string): string {

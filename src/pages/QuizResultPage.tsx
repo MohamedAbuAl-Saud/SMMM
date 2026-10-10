@@ -19,7 +19,10 @@ import {
   ArrowRight,
   RotateCcw,
   AlertCircle,
-  PlusCircle
+  PlusCircle,
+  Star,
+  Frown,
+  Heart
 } from 'lucide-react';
 
 interface QuizResultPageProps {
@@ -125,23 +128,37 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
       <div className="max-w-2xl w-full mx-auto px-4 pt-6 flex-1">
         {/* Main Result Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden mb-8">
-          {/* Reaction Character */}
-          <div className="flex justify-center mb-4 gap-3">
+          {/* Reaction Character with requested assets */}
+          <div className="flex justify-center mb-4">
             {isPerfect ? (
-              <div className="flex items-center gap-3">
-                <MohamedCharacter className="w-24 h-24 drop-shadow-md hover:scale-105 transition-transform" />
-                <CuteBear className="w-28 h-28" mood="celebrate" />
-                <SamaCharacter className="w-24 h-24 drop-shadow-md hover:scale-105 transition-transform" />
-              </div>
-            ) : isHigh ? (
-              <div className="flex items-center gap-3">
-                <SamaCharacter className="w-24 h-24" />
-                <CuteBear className="w-24 h-24" mood="happy" />
+              <div className="flex flex-col items-center">
+                <img
+                  src="https://block.youtest.me/static/assets/img/player/completed/dudu-8.webp"
+                  alt="20 من 20 صديقي المفضل"
+                  className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-md animate-bounce-short select-none"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
+                />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-black mt-2 shadow-xs">
+                  <Trophy className="w-3.5 h-3.5 text-amber-600 fill-amber-400" />
+                  <span>صديقي المفضل مقفل الامتحان!</span>
+                </span>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <MohamedCharacter className="w-24 h-24" />
-                <CuteBear className="w-24 h-24" mood="sad" />
+              <div className="flex flex-col items-center">
+                <img
+                  src="https://block.youtest.me/static/assets/img/player/completed/dudu-5.webp"
+                  alt="زعلان"
+                  className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-md select-none"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
+                />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-100 text-rose-800 border border-rose-300 rounded-full text-xs font-black mt-2 shadow-xs">
+                  <Frown className="w-3.5 h-3.5 text-rose-600" />
+                  <span>مش مقفل الـ 20</span>
+                </span>
               </div>
             )}
           </div>
@@ -150,7 +167,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
             نتيجة اختبار: <span className="text-sky-600">{result.creatorName}</span>
           </h2>
           <p className="text-xs text-slate-500 font-black mb-6">
-            المشارك: {result.participantName} • المركز #{result.rank} في الشلة
+            المشارك: {result.participantName} • المركز #{result.rank} في لوحة الشرف
           </p>
 
           {/* Big Score Bubble */}
@@ -163,21 +180,32 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
             </div>
           </div>
 
-          {/* Egyptian Commentary */}
+          {/* Egyptian Commentary: Exact as requested */}
           <div className="max-w-md mx-auto mb-8">
             {isPerfect ? (
-              <div className="bg-emerald-50 border-2 border-emerald-300 p-4 rounded-2xl text-emerald-950 font-black text-base shadow-xs leading-relaxed">
-                «يا سلام! أنت فعلًا صديق مميز، واضح إنك مهتم وبتعرف صاحبك كويس جدًا!» 🎉🔥
-              </div>
-            ) : isHigh ? (
-              <div className="bg-sky-50 border-2 border-sky-300 p-4 rounded-2xl text-sky-950 font-black text-base shadow-xs leading-relaxed">
-                «عاش يا بطل! نتيجة جامدة جداً، إنت عارف تفاصيل كتير ومفيش شك إنكم صحاب بجد!» ⭐
+              <div className="bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl text-emerald-950 font-black text-base shadow-xs leading-relaxed">
+                <div className="flex items-center justify-center gap-2 text-lg mb-1 font-black">
+                  <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+                  <p>«20 من 20! وطلعت صديقي المفضل!»</p>
+                  <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+                </div>
+                <p className="text-xs text-emerald-800 font-extrabold flex items-center justify-center gap-1.5 mt-1">
+                  <span>أحب اهتمامك وفهمك ليا بكل التفاصيل، إنت بطل وأكتر واحد فاهمني!</span>
+                  <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
+                </p>
               </div>
             ) : (
-              <div className="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl text-amber-950 font-black text-base shadow-xs leading-relaxed">
-                «إيه ده؟ زعلانين منك شوية! شكلك محتاج تركز وتعرف صاحبك أكتر!»
-                <p className="text-xs text-amber-800 font-black mt-1">
-                  «زعلان 😒 أنت وحش، متكلمنيش تاني 😒»
+              <div className="bg-rose-50 border-2 border-rose-300 p-5 rounded-2xl text-rose-950 font-black text-base shadow-xs leading-relaxed">
+                <div className="flex items-center justify-center gap-2 text-lg mb-1 font-black">
+                  <Frown className="w-5 h-5 text-rose-600" />
+                  <p>«زعلان.. أنت وحش متكلمنيش تاني»</p>
+                  <Frown className="w-5 h-5 text-rose-600" />
+                </div>
+                <p className="text-xs text-rose-700 font-extrabold">
+                  {result.score === 19
+                    ? 'جايب 19 من 20 وناقص درجة واحدة؟! كان نفسك تقفل بس برضه زعلان منك!'
+                    : `جايب ${result.score} بس من 20؟! ركز معايا شوية واعرفني أكتر يا عم!`
+                  }
                 </p>
               </div>
             )}
@@ -256,14 +284,14 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                     {item.questionText}
                   </h4>
                   {item.isCorrect ? (
-                    <span className="bg-emerald-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>صح ✓</span>
+                    <span className="bg-emerald-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 shadow-xs">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>إجابة صح</span>
                     </span>
                   ) : (
-                    <span className="bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1">
-                      <XCircle className="w-3 h-3" />
-                      <span>غلط ✗</span>
+                    <span className="bg-rose-500 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1 shadow-xs">
+                      <XCircle className="w-3.5 h-3.5" />
+                      <span>إجابة خطأ</span>
                     </span>
                   )}
                 </div>

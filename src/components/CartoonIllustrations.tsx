@@ -259,19 +259,109 @@ export function CartoonPencil({ className = 'w-10 h-10' }: { className?: string 
   );
 }
 
-// Avatar for Leaderboard
-export function CartoonAvatar({ gender = 'unspecified', index = 0, className = 'w-14 h-14' }: { gender?: string; index?: number; className?: string }) {
-  if (gender === 'female' || index % 2 === 1) {
+// Avatar for Leaderboard with cute random animal options (Bunny, Bear, Kitten, Puppy, Duck, Fox)
+export function CartoonAvatar({ gender = 'unspecified', index = 0, className = 'w-12 h-12' }: { gender?: string; index?: number; className?: string }) {
+  const avatarType = Math.abs(index) % 6;
+
+  // 0: Cute Bunny
+  if (avatarType === 0) {
     return (
-      <div className={`${className} rounded-full border-3 border-pink-300 shadow-sm flex items-center justify-center p-1 bg-pink-100 overflow-hidden`}>
-        <SamaCharacter className="w-full h-full" />
+      <div className={`${className} rounded-full border-2 border-pink-300 shadow-xs flex items-center justify-center p-1 bg-pink-100/90 overflow-hidden`}>
+        <CuteBunny className="w-full h-full" />
       </div>
     );
   }
 
+  // 1: Cute Bear
+  if (avatarType === 1) {
+    return (
+      <div className={`${className} rounded-full border-2 border-amber-300 shadow-xs flex items-center justify-center p-1 bg-amber-100/90 overflow-hidden`}>
+        <CuteBear className="w-full h-full" mood="happy" />
+      </div>
+    );
+  }
+
+  // 2: Cute Kitten
+  if (avatarType === 2) {
+    return (
+      <div className={`${className} rounded-full border-2 border-purple-300 shadow-xs flex items-center justify-center p-1 bg-purple-100/90 overflow-hidden`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          {/* Kitten Ears */}
+          <polygon points="20,15 35,45 10,40" fill="#F472B6" stroke="#9D174D" strokeWidth="2.5" />
+          <polygon points="80,15 65,45 90,40" fill="#F472B6" stroke="#9D174D" strokeWidth="2.5" />
+          {/* Kitten Face */}
+          <circle cx="50" cy="55" r="35" fill="#FDF2F8" stroke="#9D174D" strokeWidth="3" />
+          {/* Eyes */}
+          <ellipse cx="38" cy="52" rx="4" ry="5.5" fill="#831843" />
+          <ellipse cx="62" cy="52" rx="4" ry="5.5" fill="#831843" />
+          <circle cx="36" cy="50" r="1.5" fill="#FFFFFF" />
+          <circle cx="60" cy="50" r="1.5" fill="#FFFFFF" />
+          {/* Nose & Mouth */}
+          <polygon points="50,60 46,57 54,57" fill="#F43F5E" />
+          <path d="M46 62 Q50 66 50 63 Q50 66 54 62" stroke="#831843" strokeWidth="2" strokeLinecap="round" fill="none" />
+          {/* Cheeks */}
+          <circle cx="28" cy="62" r="5" fill="#FDA4AF" opacity="0.8" />
+          <circle cx="72" cy="62" r="5" fill="#FDA4AF" opacity="0.8" />
+        </svg>
+      </div>
+    );
+  }
+
+  // 3: Cute Puppy
+  if (avatarType === 3) {
+    return (
+      <div className={`${className} rounded-full border-2 border-sky-300 shadow-xs flex items-center justify-center p-1 bg-sky-100/90 overflow-hidden`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          {/* Puppy floppy ears */}
+          <ellipse cx="20" cy="45" rx="10" ry="18" fill="#B45309" stroke="#78350F" strokeWidth="2.5" />
+          <ellipse cx="80" cy="45" rx="10" ry="18" fill="#B45309" stroke="#78350F" strokeWidth="2.5" />
+          {/* Puppy Face */}
+          <circle cx="50" cy="55" r="34" fill="#FEF3C7" stroke="#78350F" strokeWidth="3" />
+          {/* Eyes */}
+          <circle cx="38" cy="50" r="5" fill="#78350F" />
+          <circle cx="62" cy="50" r="5" fill="#78350F" />
+          <circle cx="36" cy="48" r="1.8" fill="#FFFFFF" />
+          <circle cx="60" cy="48" r="1.8" fill="#FFFFFF" />
+          {/* Snout & Nose */}
+          <ellipse cx="50" cy="64" rx="12" ry="9" fill="#FDE68A" />
+          <ellipse cx="50" cy="60" rx="4.5" ry="3.5" fill="#78350F" />
+          <path d="M50 64 L50 69" stroke="#78350F" strokeWidth="2" strokeLinecap="round" />
+          {/* Cheeks */}
+          <circle cx="30" cy="63" r="4.5" fill="#F87171" opacity="0.75" />
+          <circle cx="70" cy="63" r="4.5" fill="#F87171" opacity="0.75" />
+        </svg>
+      </div>
+    );
+  }
+
+  // 4: Cute Duck / Chick
+  if (avatarType === 4) {
+    return (
+      <div className={`${className} rounded-full border-2 border-yellow-400 shadow-xs flex items-center justify-center p-1 bg-yellow-100/90 overflow-hidden`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          {/* Duck Head */}
+          <circle cx="50" cy="52" r="34" fill="#FDE047" stroke="#CA8A04" strokeWidth="3" />
+          {/* Duck Tuft */}
+          <path d="M50 18 Q46 10 52 14" stroke="#CA8A04" strokeWidth="3" strokeLinecap="round" fill="none" />
+          {/* Eyes */}
+          <circle cx="38" cy="48" r="4.5" fill="#713F12" />
+          <circle cx="62" cy="48" r="4.5" fill="#713F12" />
+          <circle cx="36" cy="46" r="1.6" fill="#FFFFFF" />
+          <circle cx="60" cy="46" r="1.6" fill="#FFFFFF" />
+          {/* Orange Beak */}
+          <ellipse cx="50" cy="58" rx="10" ry="6" fill="#FB923C" stroke="#C2410C" strokeWidth="2" />
+          {/* Cheeks */}
+          <circle cx="28" cy="56" r="4.5" fill="#F472B6" opacity="0.85" />
+          <circle cx="72" cy="56" r="4.5" fill="#F472B6" opacity="0.85" />
+        </svg>
+      </div>
+    );
+  }
+
+  // 5: Cute Panda / Bear with Celebrate
   return (
-    <div className={`${className} rounded-full border-3 border-sky-300 shadow-sm flex items-center justify-center p-1 bg-sky-100 overflow-hidden`}>
-      <MohamedCharacter className="w-full h-full" />
+    <div className={`${className} rounded-full border-2 border-emerald-300 shadow-xs flex items-center justify-center p-1 bg-emerald-50 overflow-hidden`}>
+      <CuteBear className="w-full h-full" mood="celebrate" />
     </div>
   );
 }

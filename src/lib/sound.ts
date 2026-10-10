@@ -116,14 +116,14 @@ class SoundEffects {
       osc.frequency.linearRampToValueAtTime(460, ctx.currentTime + 0.24);
       osc.frequency.linearRampToValueAtTime(280, ctx.currentTime + 0.32);
 
-      gain.gain.setValueAtTime(0.22, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.38);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start();
-      osc.stop(ctx.currentTime + 0.35);
+      osc.stop(ctx.currentTime + 0.38);
     } catch {}
   }
 
@@ -131,44 +131,58 @@ class SoundEffects {
     this.playBoing();
   }
 
-  // Welcoming musical melody on splash screen
-  public playWelcome(): void {
+  // Cute cartoon opening chime (for 5s loading screen launch)
+  public playCuteOpen(): void {
     if (this.isMuted) return;
     try {
       const ctx = this.getContext();
       if (!ctx) return;
 
-      // Joyful cartoon arpeggio: C5 - E5 - G5 - B5 - C6
-      const notes = [
-        { f: 523.25, d: 0.15 },
-        { f: 659.25, d: 0.15 },
-        { f: 783.99, d: 0.15 },
-        { f: 987.77, d: 0.15 },
-        { f: 1046.5, d: 0.4 },
+      // Magical pentatonic cartoon chime with bell harmonics: C5, E5, G5, A5, C6, E6
+      const chimeNotes = [
+        { f: 523.25, time: 0.0, dur: 0.35 },
+        { f: 659.25, time: 0.14, dur: 0.38 },
+        { f: 783.99, time: 0.28, dur: 0.42 },
+        { f: 880.00, time: 0.44, dur: 0.46 },
+        { f: 1046.50, time: 0.60, dur: 0.55 },
+        { f: 1318.51, time: 0.78, dur: 0.75 },
       ];
 
-      notes.forEach((item, idx) => {
+      chimeNotes.forEach(({ f, time, dur }) => {
         const osc = ctx.createOscillator();
+        const oscHarmonic = ctx.createOscillator();
         const gain = ctx.createGain();
-        const start = ctx.currentTime + idx * 0.1;
+        const start = ctx.currentTime + time;
 
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(item.f, start);
+        osc.frequency.setValueAtTime(f, start);
 
-        gain.gain.setValueAtTime(0.001, start);
-        gain.gain.linearRampToValueAtTime(0.25, start + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, start + item.d);
+        // Subdued bell harmonic (octave higher)
+        oscHarmonic.type = 'sine';
+        oscHarmonic.frequency.setValueAtTime(f * 2, start);
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.linearRampToValueAtTime(0.2, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
 
         osc.connect(gain);
+        oscHarmonic.connect(gain);
         gain.connect(ctx.destination);
 
         osc.start(start);
-        osc.stop(start + item.d);
+        oscHarmonic.start(start);
+        osc.stop(start + dur);
+        oscHarmonic.stop(start + dur);
       });
     } catch {}
   }
 
-  // Next question cheerful note
+  // Welcoming musical melody
+  public playWelcome(): void {
+    this.playCuteOpen();
+  }
+
+  // Cheerful Next question chord
   public playNext(): void {
     if (this.isMuted) return;
     try {
@@ -193,7 +207,7 @@ class SoundEffects {
     } catch {}
   }
 
-  // Fanfare celebration
+  // Fanfare celebration with joyful victory tones
   public playFanfare(): void {
     if (this.isMuted) return;
     try {
@@ -205,7 +219,7 @@ class SoundEffects {
         { f: 523.25, t: 0.12, d: 0.14 },
         { f: 659.25, t: 0.24, d: 0.16 },
         { f: 783.99, t: 0.38, d: 0.2 },
-        { f: 1046.5, t: 0.55, d: 0.6 },
+        { f: 1046.5, t: 0.55, d: 0.65 },
       ];
 
       melody.forEach(({ f, t, d }) => {
@@ -226,6 +240,33 @@ class SoundEffects {
         osc.start(start);
         osc.stop(start + d);
       });
+    } catch {}
+  }
+
+  // Cartoon Whoosh transition sound
+  public playWhoosh(): void {
+    if (this.isMuted) return;
+    try {
+      const ctx = this.getContext();
+      if (!ctx) return;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(260, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.09);
+      osc.frequency.exponentialRampToValueAtTime(350, ctx.currentTime + 0.18);
+
+      gain.gain.setValueAtTime(0.001, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.18);
     } catch {}
   }
 }

@@ -137,9 +137,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 relative z-10">
         {/* BIG FLOATING LOGO - Circular with subtle neon glow */}
-        <div className="flex flex-col items-center justify-center pt-2 pb-6 text-center select-none">
+        <div className="flex flex-col items-center justify-center pt-2 pb-6 text-center select-none relative">
           <img
-            src="https://cdn.imagetourls.com/uploads/tyImg/1gI6aNqsh.png"
+            src="/SM.jpg"
             alt="Bestie Check SM"
             className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-contain p-2.5 bg-white/95 ring-4 ring-sky-300/80 shadow-[0_0_25px_rgba(56,189,248,0.6),0_0_45px_rgba(244,114,182,0.35)] hover:shadow-[0_0_35px_rgba(56,189,248,0.85)] hover:scale-105 transition-all duration-300"
           />
@@ -156,32 +156,50 @@ export function HomePage({ onNavigate }: HomePageProps) {
           {/* Top Rainbow Stripe */}
           <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-sky-400 via-pink-400 to-yellow-300" />
 
+          {/* Requested Characters illustration */}
+          <div className="flex justify-center mb-4">
+            <img
+              src="https://block.youtest.me/static/assets/img/user/home/characters.webp"
+              alt="شخصيات بيستي تشيك"
+              className="w-48 sm:w-64 h-auto object-contain select-none drop-shadow-md hover:scale-105 transition-transform"
+              onError={(e) => {
+                (e.currentTarget as HTMLElement).style.display = 'none';
+              }}
+            />
+          </div>
+
           {/* Cartoon Mascots */}
           <div className="flex justify-center items-center gap-4 mb-4 relative">
-            <CuteBunny className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-md hover:scale-105 transition-transform" />
+            <CuteBunny className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md hover:scale-105 transition-transform" />
 
             <div className="flex flex-col items-center">
-              <CuteBear className="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-md animate-bounce-short" mood="celebrate" />
+              <CuteBear className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-md animate-bounce-short" mood="celebrate" />
               <div className="flex items-center gap-1 text-pink-500 font-black text-xs mt-1">
                 <Heart className="w-3.5 h-3.5 fill-pink-500" />
                 <span>بيستي تشيك</span>
               </div>
             </div>
 
-            <CartoonTrophy className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md hover:scale-105 transition-transform" />
+            <CartoonTrophy className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-md hover:scale-105 transition-transform" />
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-sky-950 mb-3 tracking-tight font-['Cairo',sans-serif]">
             أنشئ اختبارك
           </h2>
 
-          <p className="text-base sm:text-lg text-sky-800 font-extrabold max-w-lg mx-auto mb-6 leading-relaxed">
-            اكشف مين بيهتم بيك ومين لسه محتاج يعرفك أكتر! جاوب على 20 سؤال عن نفسك، وشارك الرابط مع أصحابك وشوف مين هيطلع في المركز الأول!
+          {/* Exact slogan as requested: انشأ اختبارك لكشف من يهتم لك ومن مزيف */}
+          <p className="text-lg sm:text-xl text-sky-900 font-black max-w-lg mx-auto mb-4 leading-relaxed font-['Cairo']">
+            «أنشئ اختبارك لكشف من يهتم لك ومن مزيف!»
           </p>
 
+          <p className="text-xs sm:text-sm text-sky-700 font-bold max-w-lg mx-auto mb-6 leading-relaxed">
+            جاوب على 20 سؤال فرفوش عن شخصيتك، واعرف مين أقرب صديق ومين بيخمن على عماه!
+          </p>
+
+          {/* Development Copyright in English */}
           <div className="flex items-center justify-center gap-1.5 text-xs text-sky-850 font-black mb-6">
             <span className="text-pink-500 text-sm font-extrabold">©</span>
-            <span>محمد أبو السعود &amp; Sama</span>
+            <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
           </div>
 
           {/* Big Chunky 3D Button */}
@@ -203,17 +221,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
         {/* Section: كيف نلعب؟ */}
         <section className="mb-14">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-1.5 rounded-full text-xs font-black border border-yellow-300 mb-2">
+            <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-1.5 rounded-full text-xs font-black border border-yellow-300 mb-2 shadow-xs">
+              <Award className="w-4 h-4 text-yellow-600" />
               <span>طريقة اللعب بسيطة وسريعة</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-sky-950">كيف نلعب؟</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 font-['Cairo']">كيف نلعب؟</h2>
             <p className="text-sm text-sky-700 font-semibold mt-1">تلات خطوات وكل سنة وإنت طيب</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {/* Step 1 with custom illustrated mascot badge */}
             <div className="bg-white rounded-3xl p-6 border-2 border-sky-100 shadow-md text-center flex flex-col items-center hover:-translate-y-1 transition-transform">
-              <div className="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center mb-3 text-sky-600 shadow-inner">
+              <div className="w-16 h-16 rounded-full bg-sky-100 ring-2 ring-sky-300 flex items-center justify-center mb-3 text-sky-600 shadow-sm">
                 <CartoonPencil className="w-10 h-10" />
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 border border-sky-200 rounded-full text-xs font-black text-sky-800 mb-2 shadow-xs">
@@ -221,13 +240,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
               <h3 className="font-extrabold text-base text-sky-900 mb-2">أنشئ اختبار عن نفسك</h3>
               <p className="text-xs text-sky-700 font-semibold leading-relaxed">
-                حدد اسمك واختار إجابتك الصح و3 إجابات غلط من 20 اختيار فرفوش في كل سؤال.
+                حدد اسمك ونوعك واختار إجابتك الصح و3 إجابات غلط من 20 اختيار فرفوش في كل سؤال.
               </p>
             </div>
 
             {/* Step 2 with custom illustrated badge */}
             <div className="bg-white rounded-3xl p-6 border-2 border-pink-100 shadow-md text-center flex flex-col items-center hover:-translate-y-1 transition-transform">
-              <div className="w-16 h-16 rounded-2xl bg-pink-100 flex items-center justify-center mb-3 text-pink-600 shadow-inner">
+              <div className="w-16 h-16 rounded-full bg-pink-100 ring-2 ring-pink-300 flex items-center justify-center mb-3 text-pink-600 shadow-sm">
                 <CuteBunny className="w-12 h-12" />
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-pink-50 border border-pink-200 rounded-full text-xs font-black text-pink-800 mb-2 shadow-xs">
@@ -241,7 +260,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             {/* Step 3 with custom trophy badge */}
             <div className="bg-white rounded-3xl p-6 border-2 border-yellow-100 shadow-md text-center flex flex-col items-center hover:-translate-y-1 transition-transform">
-              <div className="w-16 h-16 rounded-2xl bg-yellow-100 flex items-center justify-center mb-3 text-yellow-600 shadow-inner">
+              <div className="w-16 h-16 rounded-full bg-yellow-100 ring-2 ring-yellow-300 flex items-center justify-center mb-3 text-yellow-600 shadow-sm">
                 <CartoonTrophy className="w-12 h-12" />
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-50 border border-yellow-200 rounded-full text-xs font-black text-yellow-800 mb-2 shadow-xs">
@@ -312,7 +331,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   <div className="flex items-center gap-3.5">
                     <div className="relative w-14 h-14 rounded-full bg-white ring-2 ring-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.55),0_0_20px_rgba(244,114,182,0.25)] p-1 flex items-center justify-center flex-shrink-0">
                       <img
-                        src="https://cdn.imagetourls.com/uploads/tyImg/1gI6aNqsh.png"
+                        src="/SM.jpg"
                         alt="Bestie Check SM"
                         className="w-full h-full object-contain rounded-full"
                       />

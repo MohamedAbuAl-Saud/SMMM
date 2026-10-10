@@ -36,9 +36,47 @@ const SubmitAnswerSchema = z.object({
   selectedOptionId: z.number().int(),
 });
 
-// 1. Get default pool questions
-apiRouter.get('/default-questions', (_req: Request, res: Response) => {
-  res.json({ questions: DEFAULT_QUESTIONS_POOL });
+// 1. Get default pool questions from database
+apiRouter.get('/default-questions', async (_req: Request, res: Response) => {
+  try {
+    const db = await getDb();
+    const qRows = db.exec("SELECT id, category, question_text, question_order FROM bank_questions ORDER BY question_order ASC");
+    if (qRows.length > 0 && qRows[0].values.length > 0) {
+      const optRows = db.exec("SELECT question_id, option_text, option_order FROM bank_options ORDER BY option_order ASC");
+      const optionsByQ = new Map<string, string[]>();
+      if (optRows.length > 0) {
+        for (const row of optRows[0].values) {
+          const qId = String(row[0]);
+          const optText = String(row[1]);
+          if (!optionsByQ.has(qId)) {
+            optionsByQ.set(qId, []);
+          }
+          optionsByQ.get(qId)!.push(optText);
+        }
+      }
+
+      const dbQuestions = qRows[0].values.map(row => {
+        const id = String(row[0]);
+        const category = String(row[1]);
+        const text = String(row[2]);
+        const defaultOptions = optionsByQ.get(id) || [];
+        return {
+          id,
+          category,
+          text,
+          defaultOptions
+        };
+      });
+
+      if (dbQuestions.length >= 80) {
+        return res.json({ questions: dbQuestions, total: dbQuestions.length, source: 'database' });
+      }
+    }
+  } catch (err) {
+    console.error("Error reading default-questions from SQLite database:", err);
+  }
+
+  res.json({ questions: DEFAULT_QUESTIONS_POOL, total: DEFAULT_QUESTIONS_POOL.length, source: 'pool' });
 });
 
 // 2. Create Quiz

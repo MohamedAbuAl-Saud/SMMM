@@ -186,7 +186,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-sky-100 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-xs font-black mb-2">
-              <span>لوحة الإدارة بتاعتك 👑</span>
+              <span>لوحة الإدارة</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-sky-950 font-['Cairo']">
               اختبار: {quiz.creatorName}
@@ -251,7 +251,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-3xl p-5 border-2 border-sky-100 shadow-sm text-center">
-            <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 mx-auto flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-sky-100 ring-2 ring-sky-300 text-sky-600 mx-auto flex items-center justify-center mb-2 shadow-xs">
               <Users className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-sky-950 font-['Fredoka','Cairo']">
@@ -261,7 +261,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
           </div>
 
           <div className="bg-white rounded-3xl p-5 border-2 border-emerald-100 shadow-sm text-center">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-emerald-100 ring-2 ring-emerald-300 text-emerald-600 mx-auto flex items-center justify-center mb-2 shadow-xs">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-emerald-950 font-['Fredoka','Cairo']">
@@ -271,7 +271,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
           </div>
 
           <div className="bg-white rounded-3xl p-5 border-2 border-amber-100 shadow-sm text-center">
-            <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 mx-auto flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-amber-100 ring-2 ring-amber-300 text-amber-600 mx-auto flex items-center justify-center mb-2 shadow-xs">
               <TrendingUp className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-amber-950 font-['Fredoka','Cairo']">
@@ -281,7 +281,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
           </div>
 
           <div className="bg-white rounded-3xl p-5 border-2 border-pink-100 shadow-sm text-center">
-            <div className="w-10 h-10 rounded-2xl bg-pink-100 text-pink-600 mx-auto flex items-center justify-center mb-2">
+            <div className="w-10 h-10 rounded-full bg-pink-100 ring-2 ring-pink-300 text-pink-600 mx-auto flex items-center justify-center mb-2 shadow-xs">
               <Award className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-pink-950 font-['Fredoka','Cairo']">
@@ -338,7 +338,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-800 font-black text-sm flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-full bg-sky-100 ring-2 ring-sky-300 text-sky-800 font-black text-sm flex items-center justify-center shadow-xs">
                         {p.rank ? `#${p.rank}` : '—'}
                       </div>
                       <div>
