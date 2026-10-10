@@ -73,10 +73,15 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
     }
   };
 
+  const getShareMessage = (name: string, url: string) => {
+    return `${name} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+  };
+
   const handleCopyLink = () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const shareMessage = getShareMessage(creatorName || 'صاحبك', url);
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -85,19 +90,21 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
   const handleShareLink = async () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
+    const shareMessage = getShareMessage(creatorName || 'صاحبك', url);
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `لوحة متصدري اختبار ${creatorName}`,
-          text: `شوف مين حل اختبار ${creatorName} وترتيب الصحاب!`,
-          url,
+          title: `اختبار بيستي تشيك: ${creatorName}`,
+          text: shareMessage,
         });
         setShared(true);
         setTimeout(() => setShared(false), 2000);
         return;
       } catch {}
     }
-    navigator.clipboard.writeText(url).then(() => {
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setShared(true);
       setTimeout(() => setShared(false), 2000);
     });
@@ -273,14 +280,14 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-base sm:text-lg flex-shrink-0 shadow-xs ${
+                      className={`rounded-full flex items-center justify-center font-black flex-shrink-0 transition-transform ${
                         isFirst
-                          ? 'bg-gradient-to-tr from-amber-400 to-yellow-300 text-amber-950 border-2 border-amber-500'
+                          ? 'w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 text-amber-950 border-3 border-amber-500 shadow-[0_4px_14px_rgba(245,158,11,0.5)] ring-4 ring-amber-300 text-lg sm:text-xl scale-105'
                           : isSecond
-                          ? 'bg-gradient-to-tr from-slate-300 to-slate-200 text-slate-800 border-2 border-slate-400'
+                          ? 'w-11 h-11 sm:w-13 sm:h-13 bg-gradient-to-tr from-slate-200 via-slate-100 to-slate-300 text-slate-800 border-2 border-slate-400 shadow-[0_2px_10px_rgba(148,163,184,0.4)] ring-3 ring-slate-300/80 text-base sm:text-lg'
                           : isThird
-                          ? 'bg-gradient-to-tr from-amber-600 to-amber-500 text-white border-2 border-amber-700'
-                          : 'bg-sky-50 text-sky-800 border border-sky-200'
+                          ? 'w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-700 text-white border-2 border-amber-700 shadow-sm ring-2 ring-amber-500/40 text-sm sm:text-base'
+                          : 'w-9 h-9 sm:w-10 sm:h-10 bg-sky-50 text-sky-800 border-2 border-sky-200 text-xs sm:text-sm'
                       }`}
                     >
                       {entry.rank}

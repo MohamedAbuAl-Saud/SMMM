@@ -70,7 +70,8 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
     if (!quizData?.quiz?.publicCode) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${quizData.quiz.publicCode}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const shareMessage = `${quizData.quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -80,19 +81,21 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
     if (!quizData?.quiz?.publicCode) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${quizData.quiz.publicCode}`;
+    const shareMessage = `${quizData.quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
     if (navigator.share) {
       try {
         await navigator.share({
           title: `اختبار بيستي تشيك: ${quizData.quiz.creatorName}`,
-          text: `ادخل حل اختباري وشوف مين هيجيب أعلى سكور!`,
-          url,
+          text: shareMessage,
         });
         setShared(true);
         setTimeout(() => setShared(false), 2000);
         return;
       } catch {}
     }
-    navigator.clipboard.writeText(url).then(() => {
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setShared(true);
       setTimeout(() => setShared(false), 2000);
     });

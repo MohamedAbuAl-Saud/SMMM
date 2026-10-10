@@ -121,10 +121,15 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
     setStage('ask_name');
   };
 
+  const getShareText = (name: string, url: string) => {
+    return `${name} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+  };
+
   const handleCopyLink = () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const shareMessage = getShareText(quizInfo?.creatorName || 'صاحبك', url);
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     });
@@ -133,19 +138,21 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
   const handleShareLink = async () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
+    const shareMessage = getShareText(quizInfo?.creatorName || 'صاحبك', url);
     if (navigator.share) {
       try {
         await navigator.share({
           title: `اختبار بيستي تشيك: ${quizInfo?.creatorName || ''}`,
-          text: `ادخل حل اختباري وشوف هتعرفني قد ايه!`,
-          url,
+          text: shareMessage,
         });
         setShared(true);
         setTimeout(() => setShared(false), 2500);
         return;
       } catch {}
     }
-    navigator.clipboard.writeText(url).then(() => {
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setShared(true);
       setTimeout(() => setShared(false), 2500);
     });
@@ -303,9 +310,21 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
               )}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-3 font-['Cairo']">
-              اختبار الصداقة بتاع <span className="text-sky-600 underline decoration-sky-300">{quizInfo.creatorName}</span>
-            </h2>
+            {/* Header with Frameless Bubu character next to creator name */}
+            <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
+              <img
+                src="https://block.youtest.me/static/assets/img/player/home/character-bubu.webp"
+                alt="Bubu"
+                className="w-8 h-8 sm:w-9 sm:h-9 object-contain select-none pointer-events-none drop-shadow-xs"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
+              />
+              <h2 className="text-lg sm:text-xl font-black text-sky-950 font-['Cairo'] flex items-center gap-1.5 flex-wrap justify-center">
+                <span>اختبار الصداقة بتاع</span>
+                <span className="text-sky-600 underline decoration-sky-300 font-black">{quizInfo.creatorName}</span>
+              </h2>
+            </div>
 
             {/* CREATOR DETECTED: NOT ALLOWED TO TAKE OWN TEST */}
             {isCreator ? (
@@ -370,21 +389,9 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
             ) : (
               /* FRIEND DETECTED: CAN PLAY THE TEST */
               <>
-                {/* Bear Character in box corner with white background */}
-                <div className="relative bg-gradient-to-br from-sky-50 to-pink-50 rounded-3xl p-6 sm:p-7 border-2 border-sky-200 shadow-inner mb-6 text-center overflow-hidden">
-                  {/* Bubu bear in corner with white background */}
-                  <div className="absolute top-2 left-2 w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-2xl p-1.5 shadow-md border-2 border-sky-100 flex items-center justify-center">
-                    <img
-                      src="https://block.youtest.me/static/assets/img/player/home/character-bubu.webp"
-                      alt="Bubu"
-                      className="w-full h-full object-contain select-none drop-shadow-xs"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLElement).style.display = 'none';
-                      }}
-                    />
-                  </div>
-
-                  <p className="text-base sm:text-lg text-sky-950 font-black leading-relaxed max-w-sm mx-auto pr-14 pl-2 font-['Cairo']">
+                {/* Friend intro bubble */}
+                <div className="relative bg-gradient-to-br from-sky-50 to-pink-50 rounded-3xl p-5 sm:p-6 border-2 border-sky-200 shadow-inner mb-6 text-center overflow-hidden">
+                  <p className="text-sm sm:text-base text-sky-950 font-black leading-relaxed max-w-sm mx-auto font-['Cairo']">
                     «يلا ورينا بقا فعلا احنا صحاب وحبايب ومهتمين بيا ولا لا؟»
                   </p>
 
@@ -441,14 +448,14 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                           className="bg-white rounded-2xl p-3 border border-sky-100 flex items-center justify-between gap-2 shadow-xs"
                         >
                           <div className="flex items-center gap-2.5">
-                            <span className={`w-7 h-7 rounded-full text-xs font-black flex items-center justify-center border shadow-xs ${
+                            <span className={`w-8 h-8 rounded-full text-xs font-black flex items-center justify-center border shadow-xs transition-transform ${
                               idx === 0
-                                ? 'bg-amber-400 text-amber-950 border-amber-500'
+                                ? 'bg-gradient-to-tr from-amber-400 via-yellow-300 to-amber-500 text-amber-950 border-amber-500 ring-2 ring-amber-300 scale-105'
                                 : idx === 1
-                                ? 'bg-slate-200 text-slate-800 border-slate-300'
+                                ? 'bg-gradient-to-tr from-slate-200 via-slate-100 to-slate-300 text-slate-800 border-slate-400 ring-2 ring-slate-200'
                                 : idx === 2
-                                ? 'bg-amber-700 text-white border-amber-800'
-                                : 'bg-sky-100 text-sky-800 border-sky-200'
+                                ? 'bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-700 text-white border-amber-800 ring-1 ring-amber-600'
+                                : 'bg-sky-50 text-sky-800 border-sky-200'
                             }`}>
                               {idx + 1}
                             </span>

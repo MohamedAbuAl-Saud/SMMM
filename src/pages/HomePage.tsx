@@ -77,12 +77,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const handleShareLink = async (quiz: StoredQuizItem) => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${quiz.publicCode}`;
+    const shareMessage = `${quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
     if (navigator.share) {
       try {
         await navigator.share({
           title: `اختبار بيستي تشيك: ${quiz.creatorName}`,
-          text: `يلا ادخل حل اختباري وشوف هتعرفني بجد ولا هتهبد!`,
-          url,
+          text: shareMessage,
         });
         setSharedCode(quiz.publicCode);
         setTimeout(() => setSharedCode(null), 2500);
@@ -91,7 +91,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
         // user cancelled or share failed, fallback to copy
       }
     }
-    navigator.clipboard.writeText(url).then(() => {
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    navigator.clipboard.writeText(shareMessage).then(() => {
       setSharedCode(quiz.publicCode);
       setTimeout(() => setSharedCode(null), 2500);
     });

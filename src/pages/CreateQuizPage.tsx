@@ -405,11 +405,16 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     }
   };
 
+  const getQuizShareMessage = (name: string, url: string) => {
+    return `${name} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+  };
+
   const handleCopyShareLink = () => {
     if (!createdResult) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const shareText = getQuizShareMessage(creatorName, url);
+    navigator.clipboard.writeText(shareText).then(() => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
     });
@@ -419,17 +424,28 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     if (!createdResult) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
+    const shareText = getQuizShareMessage(creatorName, url);
     if (navigator.share) {
       try {
         await navigator.share({
           title: `اختبار بيستي تشيك: ${creatorName}`,
-          text: `يلا وروني مين عارفني بجد ومين بيهبد! ادخل حل اختباري:`,
-          url,
+          text: shareText,
         });
       } catch {}
     } else {
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
       handleCopyShareLink();
     }
+  };
+
+  const handleWhatsAppShare = () => {
+    if (!createdResult) return;
+    sound.playPop();
+    const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
+    const shareText = getQuizShareMessage(creatorName, url);
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const filteredOptions = currentOptions.filter(o =>
@@ -1046,6 +1062,16 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
               انسخ الرابط ده وابعته في الشات وعلى واتساب وإنستغرام وشوف مين هيجيب 20 من 20!
             </p>
 
+            {/* Message Preview Box */}
+            <div className="bg-amber-50/80 border-2 border-amber-300/80 rounded-2xl p-4 mb-5 text-right shadow-xs">
+              <span className="text-[11px] font-black text-amber-800 bg-amber-200/80 px-2.5 py-0.5 rounded-full inline-block mb-2">
+                نص الرسالة اللي هتتبعت لأصحابك:
+              </span>
+              <p className="text-xs sm:text-sm font-black text-amber-950 whitespace-pre-line leading-relaxed font-['Cairo']">
+                {getQuizShareMessage(creatorName, `${window.location.origin}/?q=${createdResult.publicCode}`)}
+              </p>
+            </div>
+
             {/* Share Link Box */}
             <div className="bg-sky-50 rounded-2xl p-4 border-2 border-sky-200 mb-6 flex flex-col sm:flex-row items-center gap-3">
               <input
@@ -1060,15 +1086,22 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 className="w-full sm:w-auto px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
               >
                 {copiedLink ? <CheckCircle2 className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedLink ? 'تم النسخ يا باشا!' : 'نسخ الرابط'}</span>
+                <span>{copiedLink ? 'تم النسخ يا باشا!' : 'نسخ الرسالة والرابط'}</span>
               </button>
             </div>
 
             {/* Share Actions - NO self test taking */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+              <button
+                onClick={handleWhatsAppShare}
+                className="py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>مشاركة على واتساب</span>
+              </button>
+
               <button
                 onClick={handleNativeShare}
-                className="py-3.5 bg-pink-500 hover:bg-pink-600 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="py-3.5 bg-pink-500 hover:bg-pink-600 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Share2 className="w-4 h-4" />
                 <span>شير الرابط مع الشلة</span>
@@ -1079,7 +1112,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                   sound.playPop();
                   onNavigate('manage', `${createdResult.quizId}:${createdResult.adminToken}`);
                 }}
-                className="py-3.5 bg-sky-500 hover:bg-sky-600 text-white font-black text-sm rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="py-3.5 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Trophy className="w-4 h-4 text-yellow-300" />
                 <span>لوحة التحكم ومتابعة الصحاب</span>

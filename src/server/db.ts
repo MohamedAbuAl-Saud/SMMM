@@ -148,7 +148,9 @@ export function seedQuestionBank(db: Database): void {
   try {
     const res = db.exec("SELECT COUNT(*) FROM bank_questions");
     const count = (res.length > 0 && res[0].values.length > 0) ? Number(res[0].values[0][0]) : 0;
-    if (count < 80) {
+    const musicCheck = db.exec("SELECT question_text FROM bank_questions WHERE id = 'music_1'");
+    const musicText = (musicCheck.length > 0 && musicCheck[0].values.length > 0) ? String(musicCheck[0].values[0][0]) : '';
+    if (count < 80 || !musicText.includes('القرآن')) {
       db.run("DELETE FROM bank_options; DELETE FROM bank_questions;");
       const insertQ = db.prepare("INSERT INTO bank_questions (id, category, question_text, question_order) VALUES (?, ?, ?, ?)");
       const insertOpt = db.prepare("INSERT INTO bank_options (question_id, option_text, option_order) VALUES (?, ?, ?)");

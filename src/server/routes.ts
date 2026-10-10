@@ -5,6 +5,11 @@ import { DEFAULT_QUESTIONS_POOL } from './defaultQuestions.ts';
 
 export const apiRouter = Router();
 
+// Health check endpoint
+apiRouter.get('/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', app: 'Bestie Check SM', timestamp: new Date().toISOString() });
+});
+
 // Validation Schemas
 const QuizOptionSchema = z.object({
   text: z.string().min(1).max(100).transform(s => s.trim()),
