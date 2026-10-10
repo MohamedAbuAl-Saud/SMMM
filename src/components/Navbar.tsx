@@ -7,11 +7,11 @@ import { HelpGuideModal } from './HelpGuideModal.tsx';
 interface NavbarProps {
   currentView: string;
   onNavigate: (view: string, param?: string) => void;
+  onOpenHelp: () => void;
 }
 
-export function Navbar({ currentView, onNavigate }: NavbarProps) {
+export function Navbar({ currentView, onNavigate, onOpenHelp }: NavbarProps) {
   const [isMuted, setIsMuted] = useState(sound.getMuted());
-  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -28,9 +28,7 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
   };
 
   return (
-    <>
-      {showHelp && <HelpGuideModal onClose={() => setShowHelp(false)} />}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-2 border-sky-100 shadow-sm transition-all">
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-2 border-sky-100 shadow-sm transition-all">
       <div className="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between">
         {/* Logo and Brand */}
         <div
@@ -49,7 +47,7 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
           <button
             onClick={() => {
               sound.playPop();
-              setShowHelp(true);
+              onOpenHelp();
             }}
             className="p-2 rounded-full hover:bg-amber-50 text-amber-600 transition-colors cursor-pointer"
             aria-label="دليل الاستخدام"
@@ -127,6 +125,5 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
         </div>
       </div>
     </header>
-    </>
   );
 }

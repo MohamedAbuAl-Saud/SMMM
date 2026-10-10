@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar.tsx';
 import { Footer } from './components/Footer.tsx';
 import { SplashScreen } from './components/SplashScreen.tsx';
+import { HelpGuideModal } from './components/HelpGuideModal.tsx';
 import { HomePage } from './pages/HomePage.tsx';
 import { CreateQuizPage } from './pages/CreateQuizPage.tsx';
 import { PlayQuizPage } from './pages/PlayQuizPage.tsx';
@@ -12,8 +13,15 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage.tsx';
 import { TermsPage } from './pages/TermsPage.tsx';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState<boolean>(true);
+  const [showSplash, setShowSplash] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const seen = sessionStorage.getItem('bestie_seen_splash');
+      return !seen;
+    }
+    return true;
+  });
 
+  const [showHelp, setShowHelp] = useState<boolean>(false);
   const [currentView, setCurrentView] = useState<string>('home');
   const [viewParam, setViewParam] = useState<string>('');
 
@@ -41,6 +49,9 @@ export default function App() {
   }, []);
 
   const handleFinishSplash = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('bestie_seen_splash', 'true');
+    }
     setShowSplash(false);
   };
 
@@ -68,8 +79,11 @@ export default function App() {
       {/* 2-Second Animated Splash Screen */}
       {showSplash && <SplashScreen onFinish={handleFinishSplash} />}
 
+      {/* Global Help Guide Modal */}
+      {showHelp && <HelpGuideModal onClose={() => setShowHelp(false)} />}
+
       {/* Persistent Navigation */}
-      <Navbar currentView={currentView} onNavigate={handleNavigate} />
+      <Navbar currentView={currentView} onNavigate={handleNavigate} onOpenHelp={() => setShowHelp(true)} />
 
       {/* Dynamic View Routing */}
       <div className="flex-1 flex flex-col">
@@ -89,7 +103,8 @@ export default function App() {
       </div>
 
       {/* Persistent Footer with required copyright */}
-      <Footer onNavigate={handleNavigate} />
+      <Footer onNavigate={handleNavigate} onOpenHelp={() => setShowHelp(true)} />
     </div>
   );
 }
+

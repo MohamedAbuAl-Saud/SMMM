@@ -247,6 +247,18 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
             <button
               onClick={() => {
                 sound.playPop();
+                fetchQuizManagementData();
+              }}
+              className="flex-1 sm:flex-none px-4 py-2.5 bg-sky-50 hover:bg-sky-100 border border-sky-300 text-sky-800 font-black text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              title="تحديث البيانات"
+            >
+              <RefreshCw className="w-4 h-4 text-sky-600" />
+              <span>تحديث</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sound.playPop();
                 setShowDeleteModal(true);
               }}
               className="p-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors cursor-pointer"
@@ -393,15 +405,15 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
 
       {/* Participant Detail Modal */}
       {selectedParticipantId && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] flex flex-col shadow-2xl border-2 border-sky-100 animate-scale-up">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl border-2 border-sky-100 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <div>
-                <h3 className="text-lg font-black text-sky-950 font-['Cairo']">
-                  إجابات: {participantDetail?.participant?.display_name}
+                <h3 className="text-base sm:text-lg font-black text-sky-950 font-['Cairo']">
+                  إجابات: {participantDetail?.participant?.display_name || 'المشارك'}
                 </h3>
-                <p className="text-xs text-sky-700 font-black">
-                  جاب: {participantDetail?.participant?.score} من 20 سؤال
+                <p className="text-xs text-sky-700 font-black mt-0.5">
+                  النتيجة: {participantDetail?.participant?.score ?? 0} من {participantDetail?.breakdown?.length || 20} سؤال
                 </p>
               </div>
 
@@ -416,27 +428,32 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
               {loadingDetail ? (
                 <div className="py-12 text-center text-xs font-bold text-sky-600">
-                  بنحمّل التفاصيل...
+                  <div className="w-8 h-8 border-3 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  جاري تحميل تفاصيل الإجابات...
+                </div>
+              ) : !participantDetail ? (
+                <div className="py-12 text-center text-xs font-bold text-rose-500">
+                  تعذر جلب تفاصيل إجابات المشارك. حاول مرة أخرى.
                 </div>
               ) : participantDetail?.breakdown?.length === 0 ? (
                 <div className="py-12 text-center text-xs font-bold text-slate-500">
-                  المشارك لسه مخلصش الاختبار
+                  المشارك لم يكمل الاختبار بعد أو لا توجد إجابات مسجلة.
                 </div>
               ) : (
-                participantDetail?.breakdown?.map((item: any) => (
+                participantDetail.breakdown.map((item: any) => (
                   <div
                     key={item.questionOrder}
-                    className={`p-3.5 rounded-2xl border-2 text-xs ${
+                    className={`p-3 rounded-2xl border-2 text-xs ${
                       item.isCorrect
                         ? 'border-emerald-200 bg-emerald-50/50'
                         : 'border-rose-200 bg-rose-50/50'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2 mb-1.5 font-extrabold text-slate-800">
-                      <span>#{item.questionOrder}</span>
+                      <span className="bg-white/80 px-2 py-0.5 rounded-lg border border-slate-200 text-[11px]">#{item.questionOrder}</span>
                       <span className="flex-1 text-right">{item.questionText}</span>
                       {item.isCorrect ? (
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
@@ -445,16 +462,16 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                       )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-200/60 font-bold">
+                    <div className="flex flex-col sm:flex-row gap-1.5 pt-2 border-t border-slate-200/60 font-bold">
                       <div className="flex-1 text-slate-700">
-                        <span className="text-slate-400">إجابته: </span>
+                        <span className="text-slate-400">إجابة صديقك: </span>
                         <span className={item.isCorrect ? 'text-emerald-700 font-black' : 'text-rose-700 font-black'}>
                           {item.selectedOptionText}
                         </span>
                       </div>
                       {!item.isCorrect && (
                         <div className="flex-1 text-emerald-800">
-                          <span className="text-slate-400">الصح بتاعك: </span>
+                          <span className="text-slate-400">الإجابة الصحيحة: </span>
                           <span className="font-black">{item.correctOptionText}</span>
                         </div>
                       )}
