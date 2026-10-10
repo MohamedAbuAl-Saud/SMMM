@@ -50,6 +50,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
   // Step 2: Gender (Sama / Mohamed) & Country
   const [optionalCountry, setOptionalCountry] = useState<string>('مصر');
   const [optionalGender, setOptionalGender] = useState<'female' | 'male' | ''>('female');
+  const [totalQuestions, setTotalQuestions] = useState<number>(20);
 
   // Questions state
   const [pool, setPool] = useState<DefaultQuestion[]>([]);
@@ -263,7 +264,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     updated[currentQIndex] = finishedQuestion;
     setQuestions(updated);
 
-    if (currentQIndex < 19) {
+    if (currentQIndex < totalQuestions - 1) {
       setCurrentQIndex(currentQIndex + 1);
     } else {
       sound.playFanfare();
@@ -334,8 +335,8 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
   };
 
   const handlePublishQuiz = async () => {
-    if (questions.length !== 20) {
-      alert('لازم تكمل الـ 20 سؤال كلهم يا بطل!');
+    if (questions.length !== totalQuestions) {
+      alert(`لازم تكمل الـ ${totalQuestions} سؤال كلهم يا بطل!`);
       return;
     }
 
@@ -348,6 +349,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
         creatorName,
         optionalCountry,
         optionalGender,
+        totalQuestions,
         questions: questions.map((q, idx) => ({
           questionOrder: idx + 1,
           questionText: q.text,
@@ -463,7 +465,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
       </div>
 
       <div className="max-w-3xl w-full mx-auto px-4 pt-6 flex-1">
-        {/* Step 1: Creator Name */}
+        {/* Step 1: Creator Name & Question Count */}
         {step === 1 && (
           <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-sky-100 text-center animate-scale-up">
             <div className="flex justify-center mb-4 gap-3">
@@ -498,6 +500,29 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                 <span>{nameError && <span className="text-rose-500 font-black">{nameError}</span>}</span>
                 <span>{creatorName.length} / 45</span>
               </div>
+            </div>
+
+            <div className="mb-6">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                    <img 
+                        src="https://block.youtest.me/static/assets/img/ques_images/25/header.webp"
+                        alt="Question Header"
+                        className="w-8 h-8 object-contain"
+                        onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                    />
+                    <p className="text-sm font-black text-sky-900">عايز الاختبار كام سؤال؟</p>
+                </div>
+                <div className="flex gap-2 justify-center">
+                    {[5, 10, 20].map(q => (
+                        <button
+                            key={q}
+                            onClick={() => setTotalQuestions(q)}
+                            className={`px-6 py-3 rounded-2xl font-black text-sm border-2 transition-all ${totalQuestions === q ? 'bg-sky-500 text-white border-sky-600' : 'bg-sky-50 text-sky-800 border-sky-200'}`}
+                        >
+                            {q}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <button
@@ -618,9 +643,14 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
             {/* Notebook Card Header */}
             <div className="bg-amber-100 rounded-t-3xl p-4 border-2 border-b-0 border-amber-300 flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2">
-                <CartoonPencil className="w-7 h-7" />
+                <img 
+                    src="https://block.youtest.me/static/assets/img/ques_images/25/header.webp"
+                    alt="Question Header"
+                    className="w-8 h-8 object-contain"
+                    onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                />
                 <span className="font-black text-amber-950 text-sm">
-                  سؤال {currentQIndex + 1} من 20
+                  سؤال {currentQIndex + 1} من {totalQuestions}
                 </span>
               </div>
 
@@ -628,12 +658,12 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
               <div className="flex-1 max-w-xs mx-4 bg-amber-200/80 rounded-full h-3.5 overflow-hidden p-0.5 border border-amber-400">
                 <div
                   className="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-300"
-                  style={{ width: `${((currentQIndex + 1) / 20) * 100}%` }}
+                  style={{ width: `${((currentQIndex + 1) / totalQuestions) * 100}%` }}
                 />
               </div>
 
               <span className="text-xs font-black text-amber-800 font-mono">
-                %{Math.round(((currentQIndex + 1) / 20) * 100)}
+                %{Math.round(((currentQIndex + 1) / totalQuestions) * 100)}
               </span>
             </div>
 
@@ -873,7 +903,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                         : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                     }`}
                   >
-                    <span>{currentQIndex === 19 ? 'عاش! راجع واطبع الاختبار' : 'تم، انقل على السؤال اللي بعده'}</span>
+                    <span>{currentQIndex === totalQuestions - 1 ? 'عاش! راجع واطبع الاختبار' : 'تم، انقل على السؤال اللي بعده'}</span>
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                 )}

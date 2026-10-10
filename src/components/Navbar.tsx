@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Logo } from './Logo.tsx';
 import { sound } from '../lib/sound.ts';
 import { Volume2, VolumeX, Heart, HelpCircle, Layers, PlusCircle } from 'lucide-react';
+import { HelpGuideModal } from './HelpGuideModal.tsx';
 
 interface NavbarProps {
   currentView: string;
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ currentView, onNavigate }: NavbarProps) {
   const [isMuted, setIsMuted] = useState(sound.getMuted());
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -26,7 +28,9 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-2 border-sky-100 shadow-sm transition-all">
+    <>
+      {showHelp && <HelpGuideModal onClose={() => setShowHelp(false)} />}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-2 border-sky-100 shadow-sm transition-all">
       <div className="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between">
         {/* Logo and Brand */}
         <div
@@ -41,6 +45,17 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
 
         {/* Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Help Button */}
+          <button
+            onClick={() => {
+              sound.playPop();
+              setShowHelp(true);
+            }}
+            className="p-2 rounded-full hover:bg-amber-50 text-amber-600 transition-colors cursor-pointer"
+            aria-label="دليل الاستخدام"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
           <nav className="hidden sm:flex items-center gap-1.5 bg-sky-50 p-1 rounded-2xl border border-sky-200">
             <button
               onClick={() => {
@@ -112,5 +127,6 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
         </div>
       </div>
     </header>
+    </>
   );
 }

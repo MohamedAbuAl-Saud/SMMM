@@ -18,7 +18,7 @@ const QuizOptionSchema = z.object({
 });
 
 const QuizQuestionSchema = z.object({
-  questionOrder: z.number().int().min(1).max(20),
+  questionOrder: z.number().int().min(1).max(100),
   questionText: z.string().min(1).max(200).transform(s => s.trim()),
   options: z.array(QuizOptionSchema).length(4).refine(options => {
     const correctCount = options.filter(o => o.isCorrect).length;
@@ -30,8 +30,9 @@ const CreateQuizSchema = z.object({
   creatorName: z.string().min(1, 'الاسم مطلوب').max(45, 'الاسم طويل للغاية').transform(s => s.trim()),
   optionalCountry: z.string().max(50).optional().default(''),
   optionalGender: z.enum(['female', 'male', '']).optional().default(''),
-  questions: z.array(QuizQuestionSchema).length(20, 'يجب أن يحتوي الاختبار على 20 سؤالاً بالتمام والكمال'),
-});
+  totalQuestions: z.number().refine(n => [5, 10, 20].includes(n), 'يجب أن يكون عدد الأسئلة 5 أو 10 أو 20'),
+  questions: z.array(QuizQuestionSchema),
+}).refine(data => data.questions.length === data.totalQuestions, 'عدد الأسئلة المرسلة لا يطابق العدد المحدد');
 
 const StartAttemptSchema = z.object({
   participantName: z.string().min(1, 'الاسم مطلوب').max(45, 'الاسم طويل للغاية').transform(s => s.trim()),
@@ -93,7 +94,7 @@ apiRouter.post('/quizzes', async (req: Request, res: Response) => {
       return res.status(400).json({ error: parsed.error.issues[0]?.message || 'بيانات غير صالحة' });
     }
 
-    const { creatorName, optionalCountry, optionalGender, questions } = parsed.data;
+    const { creatorName, optionalCountry, optionalGender, totalQuestions, questions } = parsed.data;
     const db = await getDb();
 
     // Generate unique public code
@@ -112,9 +113,9 @@ apiRouter.post('/quizzes', async (req: Request, res: Response) => {
 
     // Insert Quiz
     db.run(
-      `INSERT INTO quizzes (public_code, admin_token_hash, creator_name, optional_country, optional_gender, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [publicCode, adminTokenHash, creatorName, optionalCountry, optionalGender, now, now]
+      `INSERT INTO quizzes (public_code, admin_token_hash, creator_name, optional_country, optional_gender, total_questions, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [publicCode, adminTokenHash, creatorName, optionalCountry, optionalGender, totalQuestions, now, now]
     );
 
     const quizIdResult = db.exec(`SELECT last_insert_rowid() AS id`);
@@ -218,6 +219,7 @@ apiRouter.get('/quizzes/by-code/:publicCode', async (req: Request, res: Response
       creatorName: row.creator_name,
       optionalCountry: row.optional_country,
       optionalGender: row.optional_gender,
+      totalQuestions: row.total_questions,
       createdAt: row.created_at,
       totalParticipants: countRow.total_participants || 0,
       completedParticipants: countRow.completed_participants || 0,

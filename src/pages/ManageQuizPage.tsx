@@ -17,7 +17,8 @@ import {
   AlertCircle,
   X,
   XCircle,
-  Share2
+  Share2,
+  RefreshCw
 } from 'lucide-react';
 
 interface ManageQuizPageProps {
@@ -44,8 +45,6 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
 
   useEffect(() => {
     fetchQuizManagementData();
-    const interval = setInterval(fetchQuizManagementData, 1000);
-    return () => clearInterval(interval);
   }, [quizId, adminToken]);
 
   const fetchQuizManagementData = async () => {
@@ -55,8 +54,13 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
         headers: { 'x-admin-token': adminToken },
       });
       if (!res.ok) {
-        const d = await res.json();
-        throw new Error(d.error || 'فشل جلب بيانات الاختبار');
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const d = await res.json();
+            throw new Error(d.error || 'فشل جلب بيانات الاختبار');
+        } else {
+            throw new Error('فشل جلب بيانات الاختبار: خطأ في الخادم');
+        }
       }
       const data = await res.json();
       setQuizData(data);

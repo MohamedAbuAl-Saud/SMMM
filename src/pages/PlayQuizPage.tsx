@@ -28,6 +28,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
     creatorName: string;
     totalParticipants: number;
     optionalGender?: string;
+    totalQuestions: number;
   } | null>(null);
 
   const [leaderboardPreview, setLeaderboardPreview] = useState<Array<{
@@ -76,7 +77,13 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
         setStage('error');
         return;
       }
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        throw new Error('خطأ في الاتصال بالسيرفر');
+      }
       setQuizInfo(data);
 
       // Also fetch public leaderboard preview for friendly scoreboard display
@@ -177,7 +184,14 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ participantName: trimmed }),
       });
-      const data = await res.json();
+      
+      const contentType = res.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        throw new Error('خطأ في الاتصال بالسيرفر');
+      }
 
       if (!res.ok) {
         setErrorMessage(data.error || 'حصلت مشكلة في بدء الاختبار');
@@ -233,7 +247,14 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
         }),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        throw new Error('خطأ في الاتصال بالسيرفر');
+      }
+
       if (!res.ok) {
         alert(data.error || 'حصل خطأ في تسجيل الإجابة');
         setSubmittingAnswer(false);
@@ -536,7 +557,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
               <div className="flex items-center gap-2">
                 <CartoonPencil className="w-6 h-6" />
                 <span className="font-black text-amber-950 text-sm">
-                  سؤال {currentQuestion.order} من 20
+                  سؤال {currentQuestion.order} من {quizInfo?.totalQuestions || 20}
                 </span>
               </div>
 
@@ -544,12 +565,12 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
               <div className="flex-1 max-w-xs mx-4 bg-amber-200 rounded-full h-3.5 overflow-hidden p-0.5 border border-amber-400">
                 <div
                   className="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-300"
-                  style={{ width: `${(currentQuestion.order / 20) * 100}%` }}
+                  style={{ width: `${(currentQuestion.order / (quizInfo?.totalQuestions || 20)) * 100}%` }}
                 />
               </div>
 
               <span className="text-xs font-black text-amber-800 font-mono">
-                %{Math.round((currentQuestion.order / 20) * 100)}
+                %{Math.round((currentQuestion.order / (quizInfo?.totalQuestions || 20)) * 100)}
               </span>
             </div>
 

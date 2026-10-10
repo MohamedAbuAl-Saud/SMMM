@@ -45,6 +45,9 @@ async function startServer() {
       p === '/drizzle.config.ts' ||
       p === '/package-lock.json'
     ) {
+      if (req.path.startsWith('/api')) {
+        return res.status(403).json({ error: 'غير مسموح بالدخول إلى هذا المسار' });
+      }
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       return res.status(403).send(`<!doctype html>
 <html lang="ar" dir="rtl">
