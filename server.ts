@@ -54,24 +54,26 @@ async function startServer() {
 
     const userAgent = (req.headers['user-agent'] || '').toLowerCase();
     const isSocialCrawler = /whatsapp|facebookexternalhit|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|applebot/i.test(userAgent);
-    const qCode = (req.query.q as string) || (req.path.startsWith('/quiz/') ? req.path.replace('/quiz/', '').trim() : '');
 
-    if (isSocialCrawler && qCode) {
-      try {
-        const { getDb } = await import('./src/server/db.ts');
-        const db = await getDb();
-        const rows = db.exec("SELECT creator_name FROM quizzes WHERE public_code = ?", [qCode]);
-        if (rows.length > 0 && rows[0].values.length > 0) {
-          const creatorName = String(rows[0].values[0][0]);
-          const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-          const host = req.headers['x-forwarded-host'] || req.get('host') || `localhost:${PORT}`;
-          const origin = `${protocol}://${host}`;
-          const shareTitle = `اختبار بيستي تشيك: ${creatorName}`;
-          const shareDesc = `${creatorName} وريني، لو كنت صاحبي/تي وحبيبي/تي بجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨`;
-          const imageUrl = `${origin}/SM.jpg`;
-          const pageUrl = `${origin}/?q=${qCode}`;
+    if (isSocialCrawler) {
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+      const host = req.headers['x-forwarded-host'] || req.get('host') || `localhost:${PORT}`;
+      const origin = `${protocol}://${host}`;
+      const imageUrl = `${origin}/SM.jpg`;
+      const qCode = (req.query.q as string) || (req.path.startsWith('/quiz/') ? req.path.replace('/quiz/', '').trim() : '');
 
-          const html = `<!doctype html>
+      if (qCode) {
+        try {
+          const { getDb } = await import('./src/server/db.ts');
+          const db = await getDb();
+          const rows = db.exec("SELECT creator_name FROM quizzes WHERE public_code = ?", [qCode]);
+          if (rows.length > 0 && rows[0].values.length > 0) {
+            const creatorName = String(rows[0].values[0][0]);
+            const shareTitle = `اختبار بيستي تشيك: ${creatorName}`;
+            const shareDesc = `${creatorName} وريني، لو كنت صاحبي/تي وحبيبي/تي بجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨`;
+            const pageUrl = `${origin}/?q=${qCode}`;
+
+            const html = `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
@@ -99,12 +101,48 @@ async function startServer() {
   <a href="${pageUrl}">اضغط هنا للدخول للاختبار</a>
 </body>
 </html>`;
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          return res.send(html);
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            return res.send(html);
+          }
+        } catch (e) {
+          console.error('Social crawler preview error:', e);
         }
-      } catch (e) {
-        console.error('Social crawler preview error:', e);
       }
+
+      // General platform preview for social scrapers
+      const generalTitle = "Bestie Check SM - بيستي تشيك";
+      const generalDesc = "منصه Bestie Check SM لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫";
+      const generalUrl = `${origin}/`;
+      const generalHtml = `<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>${generalTitle}</title>
+  <meta name="description" content="${generalDesc}" />
+  <meta property="og:site_name" content="Bestie Check SM" />
+  <meta property="og:title" content="${generalTitle}" />
+  <meta property="og:description" content="${generalDesc}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="${generalUrl}" />
+  <meta property="og:image" content="${imageUrl}" />
+  <meta property="og:image:secure_url" content="${imageUrl}" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${generalTitle}" />
+  <meta name="twitter:description" content="${generalDesc}" />
+  <meta name="twitter:image" content="${imageUrl}" />
+  <link rel="icon" type="image/jpeg" href="/SM.jpg" />
+  <meta http-equiv="refresh" content="0;url=${generalUrl}" />
+</head>
+<body>
+  <p>${generalDesc}</p>
+  <a href="${generalUrl}">اضغط هنا للدخول للمنصة</a>
+</body>
+</html>`;
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.send(generalHtml);
     }
     next();
   });

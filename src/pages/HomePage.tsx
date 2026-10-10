@@ -35,6 +35,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [sharedCode, setSharedCode] = useState<string | null>(null);
   const [deleteConfirmQuiz, setDeleteConfirmQuiz] = useState<StoredQuizItem | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [platformShared, setPlatformShared] = useState(false);
 
   useEffect(() => {
     loadMyQuizzes();
@@ -96,6 +97,29 @@ export function HomePage({ onNavigate }: HomePageProps) {
     navigator.clipboard.writeText(shareMessage).then(() => {
       setSharedCode(quiz.publicCode);
       setTimeout(() => setSharedCode(null), 2500);
+    });
+  };
+
+  const handleSharePlatform = async () => {
+    sound.playPop();
+    const url = window.location.origin;
+    const shareMessage = `منصه Bestie Check SM لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫\n\n• الرابط:\n${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Bestie Check SM - بيستي تشيك',
+          text: shareMessage,
+        });
+        setPlatformShared(true);
+        setTimeout(() => setPlatformShared(false), 2500);
+        return;
+      } catch (err) {}
+    }
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, '_blank');
+    navigator.clipboard.writeText(shareMessage).then(() => {
+      setPlatformShared(true);
+      setTimeout(() => setPlatformShared(false), 2500);
     });
   };
 
@@ -204,8 +228,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
           </div>
 
-          {/* Big Chunky 3D Button */}
-          <div className="flex justify-center">
+          {/* Big Chunky 3D Button + Share Platform Button */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => {
                 sound.playPop();
@@ -216,6 +240,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <PlusCircle className="w-6 h-6 text-yellow-300 group-hover:rotate-12 transition-transform" />
               <span>إنشاء اختبارك</span>
               <ArrowRight className="w-5 h-5 rotate-180 group-hover:-translate-x-1 transition-transform" />
+            </button>
+
+            <button
+              onClick={handleSharePlatform}
+              className="w-full sm:w-auto px-6 py-4 bg-white hover:bg-pink-50 border-2 border-pink-300 hover:border-pink-400 text-pink-600 font-black text-base rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+              title="مشاركة رابط المنصة مع أصحابك"
+            >
+              {platformShared ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Share2 className="w-5 h-5 text-pink-500" />}
+              <span>{platformShared ? 'تم النسخ والمشاركة!' : 'مشاركة المنصة'}</span>
             </button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 {
   "name": "Bestie Check SM",
-  "description": "منصة Bestie Check SM لاختبارات الصداقة الممتعة - أنشئ اختبارك واكتشف مين يعرفك أكتر!",
+  "description": "منصه Bestie Check SM لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
