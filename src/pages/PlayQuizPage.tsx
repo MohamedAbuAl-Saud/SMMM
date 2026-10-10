@@ -563,15 +563,15 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                 </h3>
               </div>
 
-              {/* 4 Choices */}
-              <div className="grid grid-cols-1 gap-3 relative z-10 mb-4">
+    {/* 4 Choices */}
+              <div className="grid grid-cols-1 gap-3 relative z-10 mb-6">
                 {currentQuestion.options.map(opt => {
                   const isSelected = selectedOptionId === opt.id;
                   return (
                     <button
                       key={opt.id}
                       disabled={submittingAnswer}
-                      onClick={() => handleSelectAnswer(opt.id)}
+                      onClick={() => setSelectedOptionId(opt.id)}
                       className={`p-4 rounded-2xl border-2 text-right font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-between ${
                         isSelected
                           ? 'border-sky-500 bg-sky-100 text-sky-950 scale-101 shadow-md'
@@ -590,12 +590,18 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                   );
                 })}
               </div>
-
-              {submittingAnswer && (
-                <div className="text-center text-xs font-black text-sky-600 mt-2 animate-pulse">
-                  بنثبت إجابتك في السيرفر...
-                </div>
-              )}
+              
+              <button
+                disabled={submittingAnswer || selectedOptionId === null}
+                onClick={() => selectedOptionId !== null && handleSelectAnswer(selectedOptionId)}
+                className={`w-full py-4 rounded-2xl font-black text-white text-base shadow-[0_4px_0_#0369a1] transition-all ${
+                    submittingAnswer || selectedOptionId === null
+                        ? 'bg-slate-300 cursor-not-allowed'
+                        : 'bg-sky-600 hover:bg-sky-500 cursor-pointer active:translate-y-0.5'
+                }`}
+              >
+                تأكيد إجابتي لهذا السؤال
+              </button>
             </div>
           </div>
         )}

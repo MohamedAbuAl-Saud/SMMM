@@ -44,6 +44,8 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
 
   useEffect(() => {
     fetchQuizManagementData();
+    const interval = setInterval(fetchQuizManagementData, 1000);
+    return () => clearInterval(interval);
   }, [quizId, adminToken]);
 
   const fetchQuizManagementData = async () => {

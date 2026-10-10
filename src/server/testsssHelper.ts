@@ -66,8 +66,8 @@ export function saveQuizTxtFile(
 ): { fileName: string; filePath: string } {
   ensureTestsssDir();
 
-  // Sanitize creator name (keep Arabic characters and alphanumerics)
-  const safeName = creatorName.trim().replace(/[\\/:*?"<>|]/g, '') || 'اختبار';
+  // Sanitize creator name (keep Arabic characters and alphanumerics, remove all special chars and emojis)
+  const safeName = creatorName.trim().replace(/[^\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFFa-zA-Z0-9]/g, '') || 'اختبار';
   const quizNum = getQuizNumberForCreator(safeName);
   const quizNumStr = quizNum > 1 ? `${quizNum}` : '';
   const randomSuffix = generateRandomSuffix(8);
