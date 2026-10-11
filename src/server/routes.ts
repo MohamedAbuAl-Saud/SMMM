@@ -186,7 +186,7 @@ apiRouter.get('/quizzes/by-code/:publicCode', async (req: Request, res: Response
     const db = await getDb();
 
     const stmt = db.prepare(`
-      SELECT id, public_code, creator_name, optional_country, optional_gender, status, created_at
+      SELECT id, public_code, creator_name, optional_country, optional_gender, total_questions, status, created_at
       FROM quizzes
       WHERE public_code = :code AND status = 'active'
     `);
@@ -341,7 +341,7 @@ async function getParticipant(publicCode: string, req: Request) {
   if (!session || typeof session !== 'string') return null;
 
   const stmt = db.prepare(`
-    SELECT p.id, p.quiz_id, p.display_name, p.status, p.score, q.creator_name, q.public_code
+    SELECT p.id, p.quiz_id, p.display_name, p.status, p.score, q.creator_name, q.public_code, q.total_questions
     FROM participants p
     JOIN quizzes q ON q.id = p.quiz_id
     WHERE q.public_code = :code AND p.participant_session_id = :sess AND q.status = 'active'
@@ -369,6 +369,7 @@ apiRouter.get('/quizzes/by-code/:publicCode/current-question', async (req: Reque
       return res.json({ completed: true, score: participant.score });
     }
 
+    const totalQ = Number(participant.total_questions) || 20;
     const db = await getDb();
 
     // Find answered question IDs
@@ -383,7 +384,7 @@ apiRouter.get('/quizzes/by-code/:publicCode/current-question', async (req: Reque
     answeredStmt.free();
 
     const currentOrder = answeredIds.length + 1;
-    if (currentOrder > 20) {
+    if (currentOrder > totalQ) {
       return res.json({ completed: true, score: participant.score });
     }
 
@@ -430,7 +431,7 @@ apiRouter.get('/quizzes/by-code/:publicCode/current-question', async (req: Reque
       question: {
         id: qRow.id,
         order: qRow.question_order,
-        total: 20,
+        total: totalQ,
         text: qRow.question_text,
         options,
       },
@@ -513,7 +514,9 @@ apiRouter.post('/quizzes/by-code/:publicCode/answer', async (req: Request, res: 
     const answeredCount = countStmt.getAsObject().count as number;
     countStmt.free();
 
-    if (answeredCount >= 20) {
+    const totalQ = Number(participant.total_questions) || 20;
+
+    if (answeredCount >= totalQ) {
       // Calculate final score server-side by checking is_correct on quiz_options
       const scoreStmt = db.prepare(`
         SELECT COUNT(*) AS correct_count
@@ -538,7 +541,7 @@ apiRouter.post('/quizzes/by-code/:publicCode/answer', async (req: Request, res: 
 
       return res.json({
         completed: true,
-        answeredCount: 20,
+        answeredCount: totalQ,
         score: finalScore,
       });
     } else {
@@ -546,7 +549,7 @@ apiRouter.post('/quizzes/by-code/:publicCode/answer', async (req: Request, res: 
       return res.json({
         completed: false,
         answeredCount,
-        remaining: 20 - answeredCount,
+        remaining: totalQ - answeredCount,
       });
     }
   } catch (error: any) {
@@ -619,12 +622,14 @@ apiRouter.get('/quizzes/by-code/:publicCode/result', async (req: Request, res: R
     const rank = rankStmt.getAsObject().user_rank || 1;
     rankStmt.free();
 
+    const totalQ = Number(participant.total_questions) || 20;
+
     return res.json({
       participantName: participant.display_name,
       creatorName: participant.creator_name,
       score: participant.score,
-      total: 20,
-      percentage: Math.round(((participant.score as number) / 20) * 100),
+      total: totalQ,
+      percentage: Math.round(((participant.score as number) / totalQ) * 100),
       rank,
       breakdown,
     });
@@ -641,7 +646,7 @@ apiRouter.get('/quizzes/by-code/:publicCode/leaderboard', async (req: Request, r
     const db = await getDb();
 
     // Get quiz
-    const qStmt = db.prepare(`SELECT id, creator_name FROM quizzes WHERE public_code = :code AND status = 'active'`);
+    const qStmt = db.prepare(`SELECT id, creator_name, total_questions FROM quizzes WHERE public_code = :code AND status = 'active'`);
     qStmt.bind({ ':code': publicCode });
     if (!qStmt.step()) {
       qStmt.free();
@@ -649,6 +654,8 @@ apiRouter.get('/quizzes/by-code/:publicCode/leaderboard', async (req: Request, r
     }
     const quiz = qStmt.getAsObject();
     qStmt.free();
+
+    const totalQ = Number(quiz.total_questions) || 20;
 
     // Fetch ranked participants
     const stmt = db.prepare(`
@@ -668,8 +675,8 @@ apiRouter.get('/quizzes/by-code/:publicCode/leaderboard', async (req: Request, r
         id: row.id,
         displayName: row.display_name,
         score: row.score,
-        total: 20,
-        percentage: Math.round(((row.score as number) / 20) * 100),
+        total: totalQ,
+        percentage: Math.round(((row.score as number) / totalQ) * 100),
         completedAt: row.completed_at,
       });
       rank++;
@@ -679,6 +686,7 @@ apiRouter.get('/quizzes/by-code/:publicCode/leaderboard', async (req: Request, r
     return res.json({
       creatorName: quiz.creator_name,
       publicCode,
+      totalQuestions: totalQ,
       participants,
       totalCompleted: participants.length,
     });
@@ -701,7 +709,7 @@ apiRouter.get('/quizzes/manage/:quizId', async (req: Request, res: Response) => 
     const tokenHash = hashToken(adminToken);
 
     const qStmt = db.prepare(`
-      SELECT id, public_code, creator_name, optional_country, optional_gender, created_at, status
+      SELECT id, public_code, creator_name, optional_country, optional_gender, total_questions, created_at, status
       FROM quizzes
       WHERE id = :id AND admin_token_hash = :hash AND status = 'active'
     `);
@@ -712,6 +720,8 @@ apiRouter.get('/quizzes/manage/:quizId', async (req: Request, res: Response) => 
     }
     const quiz = qStmt.getAsObject();
     qStmt.free();
+
+    const totalQ = Number(quiz.total_questions) || 20;
 
     // Stats
     const statsStmt = db.prepare(`
@@ -753,7 +763,7 @@ apiRouter.get('/quizzes/manage/:quizId', async (req: Request, res: Response) => 
         status: p.status,
         startedAt: p.started_at,
         completedAt: p.completed_at,
-        percentage: Math.round(((p.score as number) / 20) * 100),
+        percentage: Math.round(((p.score as number) / totalQ) * 100),
       });
     }
     pStmt.free();
@@ -763,6 +773,7 @@ apiRouter.get('/quizzes/manage/:quizId', async (req: Request, res: Response) => 
         id: quiz.id,
         publicCode: quiz.public_code,
         creatorName: quiz.creator_name,
+        totalQuestions: totalQ,
         createdAt: quiz.created_at,
       },
       stats: {
@@ -794,13 +805,15 @@ apiRouter.get('/quizzes/manage/:quizId/participants/:participantId', async (req:
     const tokenHash = hashToken(adminToken);
 
     // Verify Quiz ownership
-    const qStmt = db.prepare(`SELECT id FROM quizzes WHERE id = :id AND admin_token_hash = :hash`);
+    const qStmt = db.prepare(`SELECT id, total_questions FROM quizzes WHERE id = :id AND admin_token_hash = :hash`);
     qStmt.bind({ ':id': quizId, ':hash': tokenHash });
     if (!qStmt.step()) {
       qStmt.free();
       return res.status(403).json({ error: 'غير مصرح بالوصول' });
     }
+    const quizObj = qStmt.getAsObject();
     qStmt.free();
+    const totalQ = Number(quizObj.total_questions) || 20;
 
     // Verify participant
     const pStmt = db.prepare(`
@@ -819,6 +832,7 @@ apiRouter.get('/quizzes/manage/:quizId/participants/:participantId', async (req:
     if (participant.status !== 'completed') {
       return res.json({
         participant,
+        totalQuestions: totalQ,
         message: 'المشارك لم يكمل الاختبار بعد',
         breakdown: [],
       });
@@ -857,6 +871,7 @@ apiRouter.get('/quizzes/manage/:quizId/participants/:participantId', async (req:
 
     return res.json({
       participant,
+      totalQuestions: totalQ,
       breakdown,
     });
   } catch (error: any) {

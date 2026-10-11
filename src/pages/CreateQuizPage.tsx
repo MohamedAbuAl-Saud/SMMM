@@ -319,7 +319,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
     setCustomQCorrect('');
     setCustomQWrongs(['', '', '']);
 
-    if (currentQIndex < 19) {
+    if (currentQIndex < totalQuestions - 1) {
       setCurrentQIndex(currentQIndex + 1);
     } else {
       sound.playFanfare();
@@ -1028,11 +1028,11 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
 
             <Logo size="md" showText={false} className="justify-center mb-3" />
 
-            <h2 className="text-3xl font-black text-sky-950 mb-2 font-['Cairo']">
+            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2 font-['Cairo']">
               اختبارك جاهز أخيرًا تعبتنا معاك!
             </h2>
-            <p className="text-base text-sky-850 font-black max-w-md mx-auto mb-6 leading-relaxed">
-              يلا بقى عشان نشوف مين مش مهتم يا خويا أو يختي ومين صاحبك الجدع بجد! جهزنا الـ 20 سؤال بالتمام والكمال!
+            <p className="text-sm sm:text-base text-sky-850 font-black max-w-md mx-auto mb-6 leading-relaxed">
+              يلا بقى عشان نشوف مين مش مهتم يا خويا أو يختي ومين صاحبك الجدع بجد! جهزنا الـ {totalQuestions} سؤال بالتمام والكمال!
             </p>
 
             <div className="flex items-center justify-center gap-1.5 text-xs text-sky-850 font-black mb-6">
@@ -1050,7 +1050,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
               <button
                 disabled={publishing}
                 onClick={handlePublishQuiz}
-                className="w-full py-4 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 active:translate-y-0.5 text-white font-black text-lg rounded-2xl shadow-[0_6px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 active:translate-y-0.5 text-white font-black text-base rounded-2xl shadow-[0_5px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <PlusCircle className="w-5 h-5 text-yellow-300" />
                 <span>{publishing ? 'جاري النشر والحفظ في السيرفر...' : 'انشر الاختبار وطلع الرابط!'}</span>
@@ -1062,9 +1062,9 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                   setStep(3);
                   setCurrentQIndex(0);
                 }}
-                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black rounded-2xl transition-colors cursor-pointer text-sm"
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black rounded-2xl transition-colors cursor-pointer text-xs sm:text-sm"
               >
-                مراجعة الـ 20 سؤال
+                مراجعة الـ {totalQuestions} سؤال
               </button>
 
               <button
@@ -1072,7 +1072,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                   sound.playPop();
                   onNavigate('home');
                 }}
-                className="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 font-bold cursor-pointer"
+                className="w-full py-2 text-xs text-slate-500 hover:text-slate-700 font-bold cursor-pointer"
               >
                 العودة للرئيسية
               </button>
@@ -1083,13 +1083,13 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
         {/* Step 5: Published Success & Share */}
         {step === 5 && createdResult && (
           <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-sky-100 text-center animate-scale-up">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4 shadow-sm">
-              <Check className="w-10 h-10 stroke-[3]" />
+            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4 shadow-sm">
+              <Check className="w-8 h-8 stroke-[3]" />
             </div>
 
-            <h2 className="text-3xl font-black text-sky-950 mb-2">عاش يا بطل! اختبارك بقى جاهز!</h2>
-            <p className="text-sm text-sky-700 font-bold mb-6">
-              انسخ الرابط ده وابعته في الشات وعلى واتساب وإنستغرام وشوف مين هيجيب 20 من 20!
+            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2">عاش يا بطل! اختبارك بقى جاهز!</h2>
+            <p className="text-xs sm:text-sm text-sky-700 font-bold mb-6">
+              انسخ الرابط ده وابعته في الشات وعلى واتساب وإنستغرام وشوف مين هيجيب {totalQuestions} من {totalQuestions}!
             </p>
 
             {/* Message Preview Box */}

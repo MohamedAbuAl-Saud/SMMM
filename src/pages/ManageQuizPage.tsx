@@ -288,7 +288,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
             <div className="text-2xl sm:text-3xl font-black text-emerald-950 font-['Fredoka','Cairo']">
               {stats.completedParticipants}
             </div>
-            <div className="text-xs font-bold text-emerald-700 mt-1">كملوا الـ 20 سؤال</div>
+            <div className="text-xs font-bold text-emerald-700 mt-1">كملوا الـ {quiz?.totalQuestions || 20} سؤال</div>
           </div>
 
           <div className="bg-white rounded-3xl p-5 border-2 border-amber-100 shadow-sm text-center">
@@ -306,7 +306,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
               <Award className="w-5 h-5" />
             </div>
             <div className="text-2xl sm:text-3xl font-black text-pink-950 font-['Fredoka','Cairo']">
-              {stats.maxScore} <span className="text-xs text-pink-400 font-bold">/ 20</span>
+              {stats.maxScore} <span className="text-xs text-pink-400 font-bold">/ {quiz?.totalQuestions || 20}</span>
             </div>
             <div className="text-xs font-bold text-pink-700 mt-1">أعلى سكور وصلوا له</div>
           </div>
@@ -379,7 +379,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                       {isCompleted ? (
                         <div className="text-left sm:text-right">
                           <span className="font-black text-base text-sky-900 font-['Fredoka','Cairo']">
-                            {p.score} / 20
+                            {p.score} / {quiz?.totalQuestions || 20}
                           </span>
                           <span className="block text-[11px] font-black text-pink-600">
                             {p.percentage}%
@@ -413,7 +413,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                   إجابات: {participantDetail?.participant?.display_name || 'المشارك'}
                 </h3>
                 <p className="text-xs text-sky-700 font-black mt-0.5">
-                  النتيجة: {participantDetail?.participant?.score ?? 0} من {participantDetail?.breakdown?.length || 20} سؤال
+                  النتيجة: {participantDetail?.participant?.score ?? 0} من {participantDetail?.totalQuestions || quiz?.totalQuestions || participantDetail?.breakdown?.length || 20} سؤال
                 </p>
               </div>
 

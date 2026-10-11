@@ -18,11 +18,12 @@ interface LeaderboardPageProps {
 }
 
 export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps) {
-  const [loading, setLoading] = useState<boolean>(true);
   const [creatorName, setCreatorName] = useState<string>('');
+  const [totalQuestions, setTotalQuestions] = useState<number>(20);
   const [participants, setParticipants] = useState<LeaderboardEntry[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
   const [shared, setShared] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Creator check
@@ -54,6 +55,7 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
       }
       const data = await res.json();
       setCreatorName(data.creatorName);
+      setTotalQuestions(data.totalQuestions || 20);
       setParticipants(data.participants || []);
       if (data.participants && data.participants.length > 0) {
         sound.playFanfare();
@@ -311,7 +313,7 @@ export function LeaderboardPage({ publicCode, onNavigate }: LeaderboardPageProps
                   <div className="flex items-center gap-3">
                     <div className="text-left sm:text-right">
                       <div className="font-black text-lg sm:text-xl text-sky-900 font-['Fredoka','Cairo']">
-                        {entry.score} <span className="text-xs text-sky-500 font-bold">/ 20</span>
+                        {entry.score} <span className="text-xs text-sky-500 font-bold">/ {entry.total || totalQuestions || 20}</span>
                       </div>
                       <div className="text-xs font-black text-pink-600">
                         {entry.percentage}%

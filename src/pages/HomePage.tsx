@@ -162,17 +162,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </div>
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 relative z-10">
-        {/* BIG FLOATING LOGO - Circular with subtle neon glow */}
-        <div className="flex flex-col items-center justify-center pt-2 pb-6 text-center select-none relative">
+        {/* FLOATING LOGO - Circular with subtle neon glow */}
+        <div className="flex flex-col items-center justify-center pt-1 pb-4 text-center select-none relative">
           <img
             src="/SM.jpg"
             alt="Bestie Check SM"
-            className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-contain p-2.5 bg-white/95 ring-4 ring-sky-300/80 shadow-[0_0_25px_rgba(56,189,248,0.6),0_0_45px_rgba(244,114,182,0.35)] hover:shadow-[0_0_35px_rgba(56,189,248,0.85)] hover:scale-105 transition-all duration-300"
+            className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-contain p-2 bg-white/95 ring-3 ring-sky-300/80 shadow-[0_0_20px_rgba(56,189,248,0.5),0_0_35px_rgba(244,114,182,0.3)] hover:shadow-[0_0_28px_rgba(56,189,248,0.75)] hover:scale-105 transition-all duration-300"
           />
-          <h1 className="text-2xl sm:text-3xl font-black text-sky-950 tracking-tight font-['Fredoka','Cairo'] mt-3 drop-shadow-xs">
+          <h1 className="text-xl sm:text-2xl font-black text-sky-950 tracking-tight font-['Fredoka','Cairo'] mt-2 drop-shadow-xs">
             Bestie Check <span className="text-pink-500">SM</span>
           </h1>
-          <p className="text-xs sm:text-sm text-sky-700 font-extrabold mt-1">
+          <p className="text-[11px] sm:text-xs text-sky-700 font-extrabold mt-0.5">
             المنصة الكرتونية الاجتماعية لاختبارات الصداقة ومشاركة المرح والذكريات الجميلة!
           </p>
         </div>
@@ -219,7 +219,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </p>
 
           <p className="text-xs sm:text-sm text-sky-700 font-bold max-w-lg mx-auto mb-6 leading-relaxed">
-            جاوب على 20 سؤال فرفوش عن شخصيتك، واعرف مين أقرب صديق ومين بيخمن على عماه!
+            جاوب على 5 أو 10 أو 20 سؤال فرفوش عن شخصيتك، واعرف مين أقرب صديق ومين بيخمن على عماه!
           </p>
 
           {/* Development Copyright in English */}
@@ -303,7 +303,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
               <h3 className="font-extrabold text-base text-sky-900 mb-2">اكتشف درجاتهم</h3>
               <p className="text-xs text-sky-700 font-semibold leading-relaxed">
-                شوف ترتيبهم في لوحة المتصدرين واعرف مين جاب 20 من 20 ومين محتاج يركز معاك!
+                شوف ترتيبهم في لوحة المتصدرين واعرف مين قفل الدرجة النهائية (5 أو 10 أو 20) ومين محتاج يركز معاك!
               </p>
             </div>
           </div>

@@ -459,7 +459,9 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                         className="w-20 h-20 object-contain mx-auto mb-2 opacity-90"
                       />
                       <p className="text-xs font-bold text-sky-900 mb-1">لسه مفيش حد حل قبلك!</p>
-                      <p className="text-[11px] font-black text-pink-600">كن أول المشاركين واقفل الـ 20/20!</p>
+                      <p className="text-[11px] font-black text-pink-600">
+                        كن أول المشاركين واقفل الـ {quizInfo?.totalQuestions || 20} من {quizInfo?.totalQuestions || 20}!
+                      </p>
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -485,7 +487,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                           </div>
 
                           <div className="font-black text-xs text-sky-900 font-['Fredoka','Cairo']">
-                            {item.score} <span className="text-[10px] text-sky-500">/ 20</span>
+                            {item.score} <span className="text-[10px] text-sky-500">/ {quizInfo?.totalQuestions || 20}</span>
                           </div>
                         </div>
                       ))}

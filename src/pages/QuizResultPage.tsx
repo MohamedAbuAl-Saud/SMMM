@@ -50,7 +50,8 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
       const data: QuizResult = await res.json();
       setResult(data);
 
-      if (data.score >= 18) {
+      const totalQ = data.total || 20;
+      if (data.score >= Math.round(totalQ * 0.9)) {
         sound.playFanfare();
         try {
           confetti({
@@ -73,7 +74,8 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
   const handleShareResult = async () => {
     if (!result) return;
     sound.playPop();
-    const shareText = `أنا جبت ${result.score} من 20 في اختبار الصداقة بتاع ${result.creatorName}! ادخل شوف هتعرف تجيب أعلى مني ولا هتهبد!`;
+    const totalQ = result.total || 20;
+    const shareText = `أنا جبت ${result.score} من ${totalQ} في اختبار الصداقة بتاع ${result.creatorName}! ادخل شوف هتعرف تجيب أعلى مني ولا هتهبد!`;
     const shareUrl = `${window.location.origin}/?q=${publicCode}`;
 
     if (navigator.share) {
@@ -120,22 +122,23 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
     );
   }
 
-  const isPerfect = result.score === 20;
-  const isHigh = result.score >= 14;
+  const totalQuestions = result.total || 20;
+  const isPerfect = result.score === totalQuestions;
+  const isHigh = result.score >= Math.round(totalQuestions * 0.7);
 
   return (
     <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 pb-16">
       <div className="max-w-2xl w-full mx-auto px-4 pt-6 flex-1">
         {/* Main Result Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden mb-8">
+        <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-2xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden mb-6">
           {/* Reaction Character with requested assets */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3">
             {isPerfect ? (
               <div className="flex flex-col items-center">
                 <img
                   src="https://block.youtest.me/static/assets/img/player/completed/dudu-8.webp"
-                  alt="20 من 20 صديقي المفضل"
-                  className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-md animate-bounce-short select-none"
+                  alt={`${totalQuestions} من ${totalQuestions} صديقي المفضل`}
+                  className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md animate-bounce-short select-none"
                   onError={(e) => {
                     (e.currentTarget as HTMLElement).style.display = 'none';
                   }}
@@ -150,32 +153,32 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                 <img
                   src="https://block.youtest.me/static/assets/img/player/completed/dudu-5.webp"
                   alt="زعلان"
-                  className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-md select-none"
+                  className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md select-none"
                   onError={(e) => {
                     (e.currentTarget as HTMLElement).style.display = 'none';
                   }}
                 />
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-100 text-rose-800 border border-rose-300 rounded-full text-xs font-black mt-2 shadow-xs">
                   <Frown className="w-3.5 h-3.5 text-rose-600" />
-                  <span>مش مقفل الـ 20</span>
+                  <span>مش مقفل الـ {totalQuestions}</span>
                 </span>
               </div>
             )}
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-1 font-['Cairo']">
+          <h2 className="text-xl sm:text-2xl font-black text-sky-950 mb-1 font-['Cairo']">
             نتيجة اختبار: <span className="text-sky-600">{result.creatorName}</span>
           </h2>
-          <p className="text-xs text-slate-500 font-black mb-6">
+          <p className="text-xs text-slate-500 font-black mb-5">
             المشارك: {result.participantName} • المركز #{result.rank} في لوحة الشرف
           </p>
 
           {/* Big Score Bubble */}
-          <div className="inline-flex flex-col items-center justify-center p-6 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-pink-50 border-3 border-sky-200 shadow-inner mb-6">
-            <div className="text-5xl sm:text-6xl font-black text-sky-900 tracking-tight font-['Fredoka','Cairo']">
-              {result.score} <span className="text-2xl text-sky-500 font-bold">/ 20</span>
+          <div className="inline-flex flex-col items-center justify-center p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-pink-50 border-3 border-sky-200 shadow-inner mb-5">
+            <div className="text-4xl sm:text-5xl font-black text-sky-900 tracking-tight font-['Fredoka','Cairo']">
+              {result.score} <span className="text-xl text-sky-500 font-bold">/ {totalQuestions}</span>
             </div>
-            <div className="text-sm font-black text-pink-600 mt-1">
+            <div className="text-xs sm:text-sm font-black text-pink-600 mt-1">
               نسبة المعرفة: {result.percentage}%
             </div>
           </div>
