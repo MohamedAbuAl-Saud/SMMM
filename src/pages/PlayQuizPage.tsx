@@ -12,6 +12,8 @@ import {
 import { Logo } from '../components/Logo.tsx';
 import { sound } from '../lib/sound.ts';
 import { PlayQuestion, StoredQuizItem } from '../lib/types.ts';
+import { formatQuizShareText, shareLinkWithImage } from '../lib/shareHelper.ts';
+import { CopyrightBadge } from '../components/CopyrightBadge.tsx';
 import { ArrowLeft, Trophy, Users, AlertCircle, ArrowRight, Copy, CheckCircle2, Eye, Share2 } from 'lucide-react';
 
 interface PlayQuizPageProps {
@@ -129,13 +131,13 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
   };
 
   const getShareText = (name: string, url: string) => {
-    return `${name} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+    return formatQuizShareText(name, url);
   };
 
   const handleCopyLink = () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
-    const shareMessage = getShareText(quizInfo?.creatorName || 'صاحبك', url);
+    const shareMessage = formatQuizShareText(quizInfo?.creatorName || 'صاحبك', url);
     navigator.clipboard.writeText(shareMessage).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
@@ -145,17 +147,12 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
   const handleShareLink = async () => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${publicCode}`;
-    const shareMessage = getShareText(quizInfo?.creatorName || 'صاحبك', url);
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `اختبار بيستي تشيك: ${quizInfo?.creatorName || ''}`,
-          text: shareMessage,
-        });
-        setShared(true);
-        setTimeout(() => setShared(false), 2500);
-        return;
-      } catch {}
+    const shareMessage = formatQuizShareText(quizInfo?.creatorName || 'صاحبك', url);
+    const shared = await shareLinkWithImage(`اختبار بيستي تشيك: ${quizInfo?.creatorName || ''}`, shareMessage, url);
+    if (shared) {
+      setShared(true);
+      setTimeout(() => setShared(false), 2500);
+      return;
     }
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
     window.open(whatsappUrl, '_blank');
@@ -628,6 +625,13 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
             </div>
           </div>
         )}
+
+        {/* Development Rights */}
+        <div className="mt-8 text-center pb-4">
+          <span dir="ltr" className="text-xs font-black text-sky-900 bg-white/90 py-1.5 px-4 rounded-full border border-sky-200 inline-block shadow-2xs">
+            © Mohamed Abu AlSaud &amp; Sama ♥
+          </span>
+        </div>
       </div>
     </div>
   );

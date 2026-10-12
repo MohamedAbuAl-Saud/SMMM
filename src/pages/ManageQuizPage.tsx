@@ -20,6 +20,7 @@ import {
   Share2,
   RefreshCw
 } from 'lucide-react';
+import { formatQuizShareText, shareLinkWithImage, SHARE_FOOTER, COPYRIGHT_TEXT } from '../lib/shareHelper.ts';
 
 interface ManageQuizPageProps {
   param: string; // "quizId:adminToken"
@@ -76,7 +77,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
     if (!quizData?.quiz?.publicCode) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${quizData.quiz.publicCode}`;
-    const shareMessage = `${quizData.quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
+    const shareMessage = formatQuizShareText(quizData.quiz.creatorName, url);
     navigator.clipboard.writeText(shareMessage).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -87,17 +88,12 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
     if (!quizData?.quiz?.publicCode) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${quizData.quiz.publicCode}`;
-    const shareMessage = `${quizData.quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `اختبار بيستي تشيك: ${quizData.quiz.creatorName}`,
-          text: shareMessage,
-        });
-        setShared(true);
-        setTimeout(() => setShared(false), 2000);
-        return;
-      } catch {}
+    const shareMessage = formatQuizShareText(quizData.quiz.creatorName, url);
+    const shared = await shareLinkWithImage(`اختبار بيستي تشيك: ${quizData.quiz.creatorName}`, shareMessage, url);
+    if (shared) {
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+      return;
     }
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
     window.open(whatsappUrl, '_blank');
@@ -401,6 +397,13 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
             </div>
           )}
         </div>
+
+        {/* Development Rights */}
+        <div className="mt-8 text-center pb-4">
+          <span dir="ltr" className="text-xs font-black text-sky-900 bg-white/90 py-1.5 px-4 rounded-full border border-sky-200 inline-block shadow-2xs">
+            © Mohamed Abu AlSaud &amp; Sama ♥
+          </span>
+        </div>
       </div>
 
       {/* Participant Detail Modal */}
@@ -487,6 +490,12 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                   </div>
                 ))
               )}
+            </div>
+
+            <div className="mt-3 pt-2.5 border-t border-slate-100 text-center">
+              <span dir="ltr" className="text-[10px] font-black text-sky-900 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 inline-block">
+                © Mohamed Abu AlSaud &amp; Sama ♥
+              </span>
             </div>
           </div>
         </div>

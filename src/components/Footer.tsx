@@ -128,6 +128,11 @@ export function Footer({ onNavigate, onOpenHelp }: FooterProps) {
             <span dir="ltr">@A_Y_TR</span>
             <span className="text-sky-200 text-xs font-bold">• تيليجرام</span>
           </a>
+
+          {/* Development Rights Box under it */}
+          <div className="mt-3.5 pt-3 border-t border-sky-100 w-full flex items-center justify-center gap-1.5 text-xs font-black text-sky-900 bg-white/80 py-2 px-3 rounded-xl border border-sky-200">
+            <span dir="ltr">© Mohamed Abu AlSaud &amp; Sama ♥</span>
+          </div>
         </div>
 
         {/* Footer bottom line */}
@@ -138,8 +143,8 @@ export function Footer({ onNavigate, onOpenHelp }: FooterProps) {
             <span>للأصدقاء في كل مكان</span>
           </div>
 
-          <div className="flex items-center gap-1.5 font-bold text-slate-500">
-            <span>Bestie Check SM</span>
+          <div className="flex items-center gap-1.5 font-black text-slate-700 text-xs bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+            <span dir="ltr">© Mohamed Abu AlSaud &amp; Sama ♥</span>
           </div>
         </div>
       </div>

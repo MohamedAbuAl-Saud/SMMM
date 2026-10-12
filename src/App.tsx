@@ -75,7 +75,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-['Cairo',sans-serif] text-slate-800 bg-sky-50 selection:bg-pink-200 selection:text-pink-900">
+    <div className="min-h-screen w-full flex flex-col font-['Cairo',sans-serif] text-slate-800 bg-sky-50 selection:bg-pink-200 selection:text-pink-900 overflow-x-hidden no-scrollbar">
       {/* 2-Second Animated Splash Screen */}
       {showSplash && <SplashScreen onFinish={handleFinishSplash} />}
 

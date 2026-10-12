@@ -9,6 +9,8 @@ import {
 } from '../components/CartoonIllustrations.tsx';
 import { sound } from '../lib/sound.ts';
 import { StoredQuizItem } from '../lib/types.ts';
+import { formatQuizShareText, formatPlatformShareText, shareLinkWithImage } from '../lib/shareHelper.ts';
+import { CopyrightBadge } from '../components/CopyrightBadge.tsx';
 import {
   Share2,
   Eye,
@@ -78,19 +80,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const handleShareLink = async (quiz: StoredQuizItem) => {
     sound.playPop();
     const url = `${window.location.origin}/?q=${quiz.publicCode}`;
-    const shareMessage = `${quiz.creatorName} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `اختبار بيستي تشيك: ${quiz.creatorName}`,
-          text: shareMessage,
-        });
-        setSharedCode(quiz.publicCode);
-        setTimeout(() => setSharedCode(null), 2500);
-        return;
-      } catch (err) {
-        // user cancelled or share failed, fallback to copy
-      }
+    const shareMessage = formatQuizShareText(quiz.creatorName, url);
+    const shared = await shareLinkWithImage(`اختبار بيستي تشيك: ${quiz.creatorName}`, shareMessage, url);
+    if (shared) {
+      setSharedCode(quiz.publicCode);
+      setTimeout(() => setSharedCode(null), 2500);
+      return;
     }
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
     window.open(whatsappUrl, '_blank');
@@ -103,17 +98,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const handleSharePlatform = async () => {
     sound.playPop();
     const url = window.location.origin;
-    const shareMessage = `منصه Bestie Check SM لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫\n\n• الرابط:\n${url}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Bestie Check SM - بيستي تشيك',
-          text: shareMessage,
-        });
-        setPlatformShared(true);
-        setTimeout(() => setPlatformShared(false), 2500);
-        return;
-      } catch (err) {}
+    const shareMessage = formatPlatformShareText(url);
+    const shared = await shareLinkWithImage('Bestie Check SM - بيستي تشيك', shareMessage, url);
+    if (shared) {
+      setPlatformShared(true);
+      setTimeout(() => setPlatformShared(false), 2500);
+      return;
     }
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
     window.open(whatsappUrl, '_blank');
@@ -152,7 +142,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 overflow-hidden pb-12">
+    <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 overflow-x-hidden no-scrollbar pb-12">
       {/* Animated Floating Clouds & Stars */}
       <div className="absolute top-4 left-6 pointer-events-none animate-bounce-short">
         <FluffyCloud className="w-24 h-14" />
@@ -245,6 +235,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <span>{platformShared ? 'تم النسخ والمشاركة!' : 'مشاركة المنصة'}</span>
             </button>
           </div>
+
+          <CopyrightBadge variant="card" />
         </div>
 
         {/* Section: كيف نلعب؟ */}
@@ -468,6 +460,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
               ))}
             </div>
           )}
+
+          <div className="mt-4 text-center">
+            <CopyrightBadge variant="subtle" />
+          </div>
         </section>
       </main>
 
