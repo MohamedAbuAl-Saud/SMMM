@@ -190,7 +190,7 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
 
   return (
     <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 pb-16">
-      <div className="max-w-4xl w-full mx-auto px-4 pt-6 flex-1">
+      <div className="max-w-4xl w-full mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6 flex-1">
         {/* Top Header Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-sky-100 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -412,9 +412,17 @@ export function ManageQuizPage({ param, onNavigate }: ManageQuizPageProps) {
                 <h3 className="text-base sm:text-lg font-black text-sky-950 font-['Cairo']">
                   إجابات: {participantDetail?.participant?.display_name || 'المشارك'}
                 </h3>
-                <p className="text-xs text-sky-700 font-black mt-0.5">
-                  النتيجة: {participantDetail?.participant?.score ?? 0} من {participantDetail?.totalQuestions || quiz?.totalQuestions || participantDetail?.breakdown?.length || 20} سؤال
-                </p>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <p className="text-xs text-sky-700 font-black">
+                    النتيجة: {participantDetail?.participant?.score ?? 0} من {participantDetail?.totalQuestions || quiz?.totalQuestions || participantDetail?.breakdown?.length || 20} سؤال
+                  </p>
+                  <span className="text-[11px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    {participantDetail?.participant?.score ?? 0} صح
+                  </span>
+                  <span className="text-[11px] font-black text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+                    {Math.max(0, (participantDetail?.totalQuestions || quiz?.totalQuestions || participantDetail?.breakdown?.length || 20) - (participantDetail?.participant?.score ?? 0))} غلط
+                  </span>
+                </div>
               </div>
 
               <button

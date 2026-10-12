@@ -177,14 +177,6 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
           <span>{Math.round(progress)}%</span>
         </div>
       </div>
-
-      {/* Mandatory Copyright Footer in English */}
-      <div className="text-center pb-2 relative z-10">
-        <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 font-black tracking-wide">
-          <span className="text-pink-500 text-sm font-extrabold">©</span>
-          <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
-        </div>
-      </div>
     </div>
   );
 }

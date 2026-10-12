@@ -111,3 +111,29 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #7dd3fc;
 }
+
+/* Compact Scrollbar for Help Guide Modal */
+.guide-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #38bdf8 #f0f9ff;
+}
+
+.guide-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.guide-scrollbar::-webkit-scrollbar-track {
+  background: #f0f9ff;
+  border-radius: 9999px;
+  margin: 8px 0;
+}
+
+.guide-scrollbar::-webkit-scrollbar-thumb {
+  background: #38bdf8;
+  border-radius: 9999px;
+  border: 1px solid #e0f2fe;
+}
+
+.guide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}

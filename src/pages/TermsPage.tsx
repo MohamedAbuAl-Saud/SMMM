@@ -36,16 +36,6 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
             </section>
 
             <section className="bg-amber-50/40 p-4 rounded-2xl border border-amber-200/60">
-              <h2 className="text-base font-black text-amber-950 mb-2">3. الملكية وحقوق التطوير</h2>
-              <p>
-                جميع حقوق تطوير المنصة والتصميم والهوية البرمجية محفوظة لـ:
-              </p>
-              <div className="mt-2 font-black text-sky-800 text-sm">
-                ©Mohamed Abu AlSaud &amp; Sama
-              </div>
-            </section>
-
-            <section className="bg-amber-50/40 p-4 rounded-2xl border border-amber-200/60">
               <h2 className="text-base font-black text-amber-950 mb-2">4. إخلاء المسؤولية</h2>
               <p>
                 المنصة غير مسؤولة عن أي خلافات شخصية قد تنشأ نتيجة إجابات أو درجات الأصدقاء، فالموضوع كله للمرح والضحك!

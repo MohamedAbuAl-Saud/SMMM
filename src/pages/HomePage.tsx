@@ -161,15 +161,15 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <FluffyCloud className="w-32 h-20" opacity="opacity-80" />
       </div>
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-4 relative z-10">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-2.5 sm:px-4 py-2 sm:py-4 relative z-10">
         {/* FLOATING LOGO - Circular with subtle neon glow */}
-        <div className="flex flex-col items-center justify-center pt-1 pb-4 text-center select-none relative">
+        <div className="flex flex-col items-center justify-center pt-1 pb-3 text-center select-none relative">
           <img
             src="/SM.jpg"
             alt="Bestie Check SM"
-            className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-contain p-2 bg-white/95 ring-3 ring-sky-300/80 shadow-[0_0_20px_rgba(56,189,248,0.5),0_0_35px_rgba(244,114,182,0.3)] hover:shadow-[0_0_28px_rgba(56,189,248,0.75)] hover:scale-105 transition-all duration-300"
+            className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-contain p-2 bg-white/95 ring-3 ring-sky-300/80 shadow-[0_0_20px_rgba(56,189,248,0.5),0_0_35px_rgba(244,114,182,0.3)] hover:shadow-[0_0_28px_rgba(56,189,248,0.75)] hover:scale-105 transition-all duration-300"
           />
-          <h1 className="text-xl sm:text-2xl font-black text-sky-950 tracking-tight font-['Fredoka','Cairo'] mt-2 drop-shadow-xs">
+          <h1 className="text-lg sm:text-2xl font-black text-sky-950 tracking-tight font-['Fredoka','Cairo'] mt-2 drop-shadow-xs">
             Bestie Check <span className="text-pink-500">SM</span>
           </h1>
           <p className="text-[11px] sm:text-xs text-sky-700 font-extrabold mt-0.5">
@@ -178,16 +178,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
 
         {/* Main Hero Card */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_12px_30px_rgba(2,132,199,0.12)] border-2 border-sky-100 text-center relative overflow-hidden mb-12">
+        <div className="bg-white rounded-3xl p-4 sm:p-8 shadow-[0_10px_25px_rgba(2,132,199,0.1)] border-2 border-sky-100 text-center relative overflow-hidden mb-8 sm:mb-10">
           {/* Top Rainbow Stripe */}
-          <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-sky-400 via-pink-400 to-yellow-300" />
+          <div className="absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r from-sky-400 via-pink-400 to-yellow-300" />
 
           {/* Requested Characters illustration */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3">
             <img
               src="https://block.youtest.me/static/assets/img/user/home/characters.webp"
               alt="شخصيات بيستي تشيك"
-              className="w-48 sm:w-64 h-auto object-contain select-none drop-shadow-md hover:scale-105 transition-transform"
+              className="w-40 sm:w-56 h-auto object-contain select-none drop-shadow-md hover:scale-105 transition-transform"
               onError={(e) => {
                 (e.currentTarget as HTMLElement).style.display = 'none';
               }}
@@ -195,59 +195,53 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </div>
 
           {/* Cartoon Mascots */}
-          <div className="flex justify-center items-center gap-4 mb-4 relative">
-            <CuteBunny className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-md hover:scale-105 transition-transform" />
+          <div className="flex justify-center items-center gap-3 sm:gap-4 mb-3 relative">
+            <CuteBunny className="w-14 h-14 sm:w-18 sm:h-18 drop-shadow-md hover:scale-105 transition-transform" />
 
             <div className="flex flex-col items-center">
-              <CuteBear className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-md animate-bounce-short" mood="celebrate" />
-              <div className="flex items-center gap-1 text-pink-500 font-black text-xs mt-1">
-                <Heart className="w-3.5 h-3.5 fill-pink-500" />
+              <CuteBear className="w-16 h-16 sm:w-22 sm:h-22 drop-shadow-md animate-bounce-short" mood="celebrate" />
+              <div className="flex items-center gap-1 text-pink-500 font-black text-xs mt-0.5">
+                <Heart className="w-3 h-3 fill-pink-500" />
                 <span>بيستي تشيك</span>
               </div>
             </div>
 
-            <CartoonTrophy className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-md hover:scale-105 transition-transform" />
+            <CartoonTrophy className="w-12 h-12 sm:w-16 sm:h-16 drop-shadow-md hover:scale-105 transition-transform" />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-sky-950 mb-3 tracking-tight font-['Cairo',sans-serif]">
+          <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2 tracking-tight font-['Cairo',sans-serif]">
             أنشئ اختبارك
           </h2>
 
           {/* Exact slogan as requested: انشأ اختبارك لكشف من يهتم لك ومن مزيف */}
-          <p className="text-lg sm:text-xl text-sky-900 font-black max-w-lg mx-auto mb-4 leading-relaxed font-['Cairo']">
+          <p className="text-base sm:text-lg text-sky-900 font-black max-w-lg mx-auto mb-2 leading-relaxed font-['Cairo']">
             «أنشئ اختبارك لكشف من يهتم لك ومن مزيف!»
           </p>
 
-          <p className="text-xs sm:text-sm text-sky-700 font-bold max-w-lg mx-auto mb-6 leading-relaxed">
+          <p className="text-[11px] sm:text-xs text-sky-700 font-bold max-w-lg mx-auto mb-6 leading-relaxed">
             جاوب على 5 أو 10 أو 20 سؤال فرفوش عن شخصيتك، واعرف مين أقرب صديق ومين بيخمن على عماه!
           </p>
 
-          {/* Development Copyright in English */}
-          <div className="flex items-center justify-center gap-1.5 text-xs text-sky-850 font-black mb-6">
-            <span className="text-pink-500 text-sm font-extrabold">©</span>
-            <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
-          </div>
-
-          {/* Big Chunky 3D Button + Share Platform Button */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          {/* Chunky 3D Button + Share Platform Button */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
             <button
               onClick={() => {
                 sound.playPop();
                 onNavigate('create');
               }}
-              className="w-full sm:w-auto px-10 py-4 bg-gradient-to-b from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 active:translate-y-1 text-white text-lg font-black rounded-2xl shadow-[0_6px_0_#0284c7] hover:shadow-[0_4px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-3 group"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-b from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 active:translate-y-1 text-white text-base font-black rounded-2xl shadow-[0_5px_0_#0284c7] hover:shadow-[0_3px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2.5 group"
             >
-              <PlusCircle className="w-6 h-6 text-yellow-300 group-hover:rotate-12 transition-transform" />
+              <PlusCircle className="w-5 h-5 text-yellow-300 group-hover:rotate-12 transition-transform" />
               <span>إنشاء اختبارك</span>
-              <ArrowRight className="w-5 h-5 rotate-180 group-hover:-translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
             </button>
 
             <button
               onClick={handleSharePlatform}
-              className="w-full sm:w-auto px-6 py-4 bg-white hover:bg-pink-50 border-2 border-pink-300 hover:border-pink-400 text-pink-600 font-black text-base rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-3.5 bg-white hover:bg-pink-50 border-2 border-pink-300 hover:border-pink-400 text-pink-600 font-black text-sm rounded-2xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
               title="مشاركة رابط المنصة مع أصحابك"
             >
-              {platformShared ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <Share2 className="w-5 h-5 text-pink-500" />}
+              {platformShared ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4 text-pink-500" />}
               <span>{platformShared ? 'تم النسخ والمشاركة!' : 'مشاركة المنصة'}</span>
             </button>
           </div>

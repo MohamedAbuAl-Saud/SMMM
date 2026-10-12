@@ -55,11 +55,6 @@ export function PrivacyPolicyPage({ onNavigate }: PrivacyPolicyPageProps) {
                 نستخدم ملفات ارتباط (Cookies) آمنة لتنظيم جلسات اللعب ومنع تكرار الإجابات العشوائية، ولا نقوم بتتبع المستخدمين عبر مواقع خارجية.
               </p>
             </section>
-
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-              <span>حقوق التطوير والملكية الفكرية:</span>
-              <span className="font-extrabold text-sky-800">©Mohamed Abu AlSaud &amp; Sama</span>
-            </div>
           </div>
 
           <div className="mt-8 pt-4 border-t border-slate-100">

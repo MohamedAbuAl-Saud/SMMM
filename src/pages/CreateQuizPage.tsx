@@ -464,23 +464,23 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
         <FluffyCloud className="w-24 h-14" />
       </div>
 
-      <div className="max-w-3xl w-full mx-auto px-4 pt-6 flex-1">
+      <div className="max-w-3xl w-full mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6 flex-1">
         {/* Step 1: Creator Name & Question Count */}
         {step === 1 && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-sky-100 text-center animate-scale-up">
-            <div className="flex justify-center mb-4 gap-3">
-              <MohamedCharacter className="w-20 h-20 -rotate-6 hover:rotate-0 transition-transform" />
-              <SamaCharacter className="w-20 h-20 rotate-6 hover:rotate-0 transition-transform" />
+          <div className="bg-white rounded-3xl p-4 sm:p-8 shadow-xl border-2 border-sky-100 text-center animate-scale-up">
+            <div className="flex justify-center mb-3 gap-3">
+              <MohamedCharacter className="w-18 h-18 sm:w-20 sm:h-20 -rotate-6 hover:rotate-0 transition-transform" />
+              <SamaCharacter className="w-18 h-18 sm:w-20 sm:h-20 rotate-6 hover:rotate-0 transition-transform" />
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-sky-950 mb-2 font-['Cairo']">
+            <h2 className="text-xl sm:text-3xl font-black text-sky-950 mb-1 font-['Cairo']">
               اسمك ايه يا بطل؟
             </h2>
-            <p className="text-sm text-sky-700 font-bold mb-6">
+            <p className="text-xs sm:text-sm text-sky-700 font-bold mb-5">
               اكتب اسمك عشان يظهر لأصحابك أول ما يفتحوا الاختبار ويشوفوا نتيجتهم معاك!
             </p>
 
-            <div className="max-w-sm mx-auto mb-6">
+            <div className="max-w-sm mx-auto mb-5">
               <input
                 type="text"
                 value={creatorName}
@@ -493,33 +493,33 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                   if (e.key === 'Enter') handleProceedName();
                 }}
                 placeholder="اكتب اسمك هنا (مثال: سما أو محمد)"
-                className="w-full px-5 py-4 text-center text-lg font-black text-sky-950 bg-sky-50 border-2 border-sky-200 rounded-2xl focus:border-sky-500 focus:outline-none transition-colors shadow-inner"
+                className="w-full px-4 py-3 sm:py-3.5 text-center text-base sm:text-lg font-black text-sky-950 bg-sky-50 border-2 border-sky-200 rounded-2xl focus:border-sky-500 focus:outline-none transition-colors shadow-inner"
                 autoFocus
               />
-              <div className="flex justify-between items-center text-xs font-bold text-slate-400 mt-2 px-1">
+              <div className="flex justify-between items-center text-xs font-bold text-slate-400 mt-1.5 px-1">
                 <span>{nameError && <span className="text-rose-500 font-black">{nameError}</span>}</span>
                 <span>{creatorName.length} / 45</span>
               </div>
             </div>
 
-            <div className="mb-6">
-                <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="mb-5">
+                <div className="flex items-center justify-center gap-1.5 mb-2.5">
                     <img 
                         src="https://block.youtest.me/static/assets/img/ques_images/25/header.webp"
                         alt="Question Header"
-                        className="w-8 h-8 object-contain"
+                        className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
                         onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
                     />
-                    <p className="text-sm font-black text-sky-900">عايز الاختبار كام سؤال؟</p>
+                    <p className="text-xs sm:text-sm font-black text-sky-900">عايز الاختبار كام سؤال؟</p>
                 </div>
                 <div className="flex gap-2 justify-center">
                     {[5, 10, 20].map(q => (
                         <button
                             key={q}
                             onClick={() => setTotalQuestions(q)}
-                            className={`px-6 py-3 rounded-2xl font-black text-sm border-2 transition-all ${totalQuestions === q ? 'bg-sky-500 text-white border-sky-600' : 'bg-sky-50 text-sky-800 border-sky-200'}`}
+                            className={`px-5 py-2.5 rounded-2xl font-black text-xs sm:text-sm border-2 transition-all cursor-pointer ${totalQuestions === q ? 'bg-sky-500 text-white border-sky-600 shadow-sm' : 'bg-sky-50 text-sky-800 border-sky-200 hover:bg-sky-100'}`}
                         >
-                            {q}
+                            {q} أسئلة
                         </button>
                     ))}
                 </div>
@@ -527,7 +527,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
 
             <button
               onClick={handleProceedName}
-              className="w-full max-w-sm py-4 bg-sky-500 hover:bg-sky-600 active:translate-y-0.5 text-white text-base font-black rounded-2xl shadow-[0_5px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
+              className="w-full max-w-sm py-3.5 bg-sky-500 hover:bg-sky-600 active:translate-y-0.5 text-white text-sm sm:text-base font-black rounded-2xl shadow-[0_5px_0_#0284c7] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
             >
               <span>يلا بينا نكمل</span>
               <ArrowLeft className="w-5 h-5" />
@@ -942,7 +942,7 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
                     مش عارف تعمل إيه يا فنان؟ بص يا سيدي الموضوع أسهل مما تتخيل!
                   </h4>
                   <p className="text-xs sm:text-sm text-sky-800 font-bold leading-relaxed">
-                    ركز معايا في الكام نقطة دول وهتخلص الـ 20 سؤال بتوعك في دقيقتين وتبقى برنس:
+                    ركز معايا في الكام نقطة دول وهتخلص الـ {totalQuestions} سؤال بتوعك في دقيقتين وتبقى برنس:
                   </p>
                 </div>
               </div>
@@ -1034,11 +1034,6 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
             <p className="text-sm sm:text-base text-sky-850 font-black max-w-md mx-auto mb-6 leading-relaxed">
               يلا بقى عشان نشوف مين مش مهتم يا خويا أو يختي ومين صاحبك الجدع بجد! جهزنا الـ {totalQuestions} سؤال بالتمام والكمال!
             </p>
-
-            <div className="flex items-center justify-center gap-1.5 text-xs text-sky-850 font-black mb-6">
-              <span className="text-pink-500 text-sm font-extrabold">©</span>
-              <span dir="ltr">Mohamed Abu AlSaud &amp; Sama</span>
-            </div>
 
             {publishError && (
               <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold rounded-2xl">

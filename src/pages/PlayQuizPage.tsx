@@ -296,24 +296,24 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
         <FluffyCloud className="w-28 h-16" />
       </div>
 
-      <div className="max-w-xl w-full mx-auto px-4 pt-8 flex-1">
+      <div className="max-w-xl w-full mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6 flex-1">
         {stage === 'loading' && (
-          <div className="bg-white rounded-3xl p-10 text-center border-2 border-sky-100 shadow-xl">
+          <div className="bg-white rounded-3xl p-8 text-center border-2 border-sky-100 shadow-xl">
             <div className="w-10 h-10 border-4 border-sky-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p className="font-extrabold text-sky-800 text-sm">بنجهزلك الأسئلة على نار هادية...</p>
           </div>
         )}
 
         {stage === 'error' && (
-          <div className="bg-white rounded-3xl p-8 text-center border-2 border-rose-200 shadow-xl">
-            <div className="w-16 h-16 rounded-full bg-rose-100 ring-4 ring-rose-200 text-rose-600 mx-auto flex items-center justify-center mb-4 shadow-sm">
-              <AlertCircle className="w-8 h-8" />
+          <div className="bg-white rounded-3xl p-6 sm:p-8 text-center border-2 border-rose-200 shadow-xl">
+            <div className="w-14 h-14 rounded-full bg-rose-100 ring-4 ring-rose-200 text-rose-600 mx-auto flex items-center justify-center mb-3 shadow-sm">
+              <AlertCircle className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-black text-slate-900 mb-2">يا خسارة!</h3>
-            <p className="text-sm font-semibold text-slate-600 mb-6">{errorMessage}</p>
+            <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-2">يا خسارة!</h3>
+            <p className="text-xs sm:text-sm font-semibold text-slate-600 mb-5">{errorMessage}</p>
             <button
               onClick={() => onNavigate('home')}
-              className="px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white font-extrabold rounded-2xl cursor-pointer"
+              className="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-xs sm:text-sm rounded-2xl cursor-pointer"
             >
               العودة للرئيسية
             </button>
@@ -322,12 +322,12 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
 
         {/* Welcome Screen for Creator or Friend */}
         {stage === 'welcome' && quizInfo && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden">
-            <div className="flex justify-center mb-4">
+          <div className="bg-white rounded-3xl p-4 sm:p-8 shadow-xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden">
+            <div className="flex justify-center mb-3">
               {quizInfo.optionalGender === 'female' ? (
-                <SamaCharacter className="w-28 h-28" />
+                <SamaCharacter className="w-24 h-24 sm:w-28 sm:h-28" />
               ) : (
-                <MohamedCharacter className="w-28 h-28" />
+                <MohamedCharacter className="w-24 h-24 sm:w-28 sm:h-28" />
               )}
             </div>
 
@@ -551,43 +551,43 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
           </div>
         )}
 
-        {/* Solving 20 Questions */}
+        {/* Solving Questions */}
         {stage === 'playing' && currentQuestion && (
           <div className="animate-fade-in">
             {/* Top Notebook Stripe */}
-            <div className="bg-amber-100 rounded-t-3xl p-4 border-2 border-b-0 border-amber-300 flex items-center justify-between shadow-xs">
-              <div className="flex items-center gap-2">
-                <CartoonPencil className="w-6 h-6" />
-                <span className="font-black text-amber-950 text-sm">
+            <div className="bg-amber-100 rounded-t-3xl p-3 sm:p-4 border-2 border-b-0 border-amber-300 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <CartoonPencil className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="font-black text-amber-950 text-xs sm:text-sm">
                   سؤال {currentQuestion.order} من {quizInfo?.totalQuestions || 20}
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className="flex-1 max-w-xs mx-4 bg-amber-200 rounded-full h-3.5 overflow-hidden p-0.5 border border-amber-400">
+              <div className="flex-1 max-w-xs mx-3 sm:mx-4 bg-amber-200 rounded-full h-3 sm:h-3.5 overflow-hidden p-0.5 border border-amber-400">
                 <div
                   className="bg-gradient-to-r from-sky-400 to-sky-600 h-full rounded-full transition-all duration-300"
                   style={{ width: `${(currentQuestion.order / (quizInfo?.totalQuestions || 20)) * 100}%` }}
                 />
               </div>
 
-              <span className="text-xs font-black text-amber-800 font-mono">
+              <span className="text-[11px] sm:text-xs font-black text-amber-800 font-mono">
                 %{Math.round((currentQuestion.order / (quizInfo?.totalQuestions || 20)) * 100)}
               </span>
             </div>
 
             {/* Notebook Paper Body */}
-            <div className="bg-white rounded-b-3xl p-6 sm:p-8 border-2 border-amber-200 shadow-xl relative overflow-hidden">
+            <div className="bg-white rounded-b-3xl p-4 sm:p-7 border-2 border-amber-200 shadow-xl relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(#0284c7_1px,transparent_1px)] bg-[size:100%_28px]" />
 
-              <div className="mb-8 text-center relative z-10">
-                <h3 className="text-xl sm:text-2xl font-black text-sky-950 leading-relaxed font-['Cairo']">
+              <div className="mb-5 sm:mb-7 text-center relative z-10">
+                <h3 className="text-lg sm:text-2xl font-black text-sky-950 leading-relaxed font-['Cairo']">
                   {currentQuestion.text}
                 </h3>
               </div>
 
-    {/* 4 Choices */}
-              <div className="grid grid-cols-1 gap-3 relative z-10 mb-6">
+              {/* 4 Choices */}
+              <div className="grid grid-cols-1 gap-2.5 relative z-10 mb-5">
                 {currentQuestion.options.map(opt => {
                   const isSelected = selectedOptionId === opt.id;
                   return (
@@ -595,7 +595,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
                       key={opt.id}
                       disabled={submittingAnswer}
                       onClick={() => setSelectedOptionId(opt.id)}
-                      className={`p-4 rounded-2xl border-2 text-right font-black text-sm sm:text-base transition-all cursor-pointer flex items-center justify-between ${
+                      className={`p-3 sm:p-4 rounded-2xl border-2 text-right font-black text-xs sm:text-base transition-all cursor-pointer flex items-center justify-between ${
                         isSelected
                           ? 'border-sky-500 bg-sky-100 text-sky-950 scale-101 shadow-md'
                           : 'border-slate-200 bg-white hover:border-sky-300 hover:bg-sky-50/50 text-slate-800'
@@ -617,7 +617,7 @@ export function PlayQuizPage({ publicCode, onNavigate }: PlayQuizPageProps) {
               <button
                 disabled={submittingAnswer || selectedOptionId === null}
                 onClick={() => selectedOptionId !== null && handleSelectAnswer(selectedOptionId)}
-                className={`w-full py-4 rounded-2xl font-black text-white text-base shadow-[0_4px_0_#0369a1] transition-all ${
+                className={`w-full py-3 sm:py-3.5 rounded-2xl font-black text-white text-sm sm:text-base shadow-[0_4px_0_#0369a1] transition-all ${
                     submittingAnswer || selectedOptionId === null
                         ? 'bg-slate-300 cursor-not-allowed'
                         : 'bg-sky-600 hover:bg-sky-500 cursor-pointer active:translate-y-0.5'

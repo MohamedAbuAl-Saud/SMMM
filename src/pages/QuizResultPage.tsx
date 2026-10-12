@@ -127,10 +127,10 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
   const isHigh = result.score >= Math.round(totalQuestions * 0.7);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 pb-16">
-      <div className="max-w-2xl w-full mx-auto px-4 pt-6 flex-1">
+    <div className="relative min-h-screen flex flex-col bg-gradient-to-b from-sky-200 via-sky-50 to-pink-50 pb-12">
+      <div className="max-w-2xl w-full mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6 flex-1">
         {/* Main Result Card */}
-        <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-2xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden mb-6">
+        <div className="bg-white rounded-3xl p-4 sm:p-7 shadow-xl border-2 border-sky-100 text-center animate-scale-up relative overflow-hidden mb-5">
           {/* Reaction Character with requested assets */}
           <div className="flex justify-center mb-3">
             {isPerfect ? (
@@ -138,7 +138,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                 <img
                   src="https://block.youtest.me/static/assets/img/player/completed/dudu-8.webp"
                   alt={`${totalQuestions} من ${totalQuestions} صديقي المفضل`}
-                  className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md animate-bounce-short select-none"
+                  className="w-24 h-24 sm:w-30 sm:h-30 object-contain drop-shadow-md animate-bounce-short select-none"
                   onError={(e) => {
                     (e.currentTarget as HTMLElement).style.display = 'none';
                   }}
@@ -153,7 +153,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                 <img
                   src="https://block.youtest.me/static/assets/img/player/completed/dudu-5.webp"
                   alt="زعلان"
-                  className="w-28 h-28 sm:w-32 sm:h-32 object-contain drop-shadow-md select-none"
+                  className="w-24 h-24 sm:w-30 sm:h-30 object-contain drop-shadow-md select-none"
                   onError={(e) => {
                     (e.currentTarget as HTMLElement).style.display = 'none';
                   }}
@@ -166,31 +166,31 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
             )}
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-black text-sky-950 mb-1 font-['Cairo']">
+          <h2 className="text-lg sm:text-2xl font-black text-sky-950 mb-1 font-['Cairo']">
             نتيجة اختبار: <span className="text-sky-600">{result.creatorName}</span>
           </h2>
-          <p className="text-xs text-slate-500 font-black mb-5">
+          <p className="text-xs text-slate-500 font-black mb-4">
             المشارك: {result.participantName} • المركز #{result.rank} في لوحة الشرف
           </p>
 
           {/* Big Score Bubble */}
-          <div className="inline-flex flex-col items-center justify-center p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-pink-50 border-3 border-sky-200 shadow-inner mb-5">
-            <div className="text-4xl sm:text-5xl font-black text-sky-900 tracking-tight font-['Fredoka','Cairo']">
-              {result.score} <span className="text-xl text-sky-500 font-bold">/ {totalQuestions}</span>
+          <div className="inline-flex flex-col items-center justify-center p-3.5 sm:p-5 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-pink-50 border-2 border-sky-200 shadow-inner mb-4">
+            <div className="text-3xl sm:text-5xl font-black text-sky-900 tracking-tight font-['Fredoka','Cairo']">
+              {result.score} <span className="text-lg sm:text-xl text-sky-500 font-bold">/ {totalQuestions}</span>
             </div>
-            <div className="text-xs sm:text-sm font-black text-pink-600 mt-1">
+            <div className="text-xs sm:text-sm font-black text-pink-600 mt-0.5">
               نسبة المعرفة: {result.percentage}%
             </div>
           </div>
 
-          {/* Egyptian Commentary: Exact as requested */}
-          <div className="max-w-md mx-auto mb-8">
+          {/* Egyptian Commentary */}
+          <div className="max-w-md mx-auto mb-6">
             {isPerfect ? (
-              <div className="bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl text-emerald-950 font-black text-base shadow-xs leading-relaxed">
-                <div className="flex items-center justify-center gap-2 text-lg mb-1 font-black">
-                  <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
-                  <p>«20 من 20! وطلعت صديقي المفضل!»</p>
-                  <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
+              <div className="bg-emerald-50 border-2 border-emerald-300 p-4 rounded-2xl text-emerald-950 font-black text-sm sm:text-base shadow-xs leading-relaxed">
+                <div className="flex items-center justify-center gap-2 text-base sm:text-lg mb-1 font-black">
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+                  <p>«{totalQuestions} من {totalQuestions}! وطلعت صديقي المفضل!»</p>
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
                 </div>
                 <p className="text-xs text-emerald-800 font-extrabold flex items-center justify-center gap-1.5 mt-1">
                   <span>أحب اهتمامك وفهمك ليا بكل التفاصيل، إنت بطل وأكتر واحد فاهمني!</span>
@@ -198,16 +198,16 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                 </p>
               </div>
             ) : (
-              <div className="bg-rose-50 border-2 border-rose-300 p-5 rounded-2xl text-rose-950 font-black text-base shadow-xs leading-relaxed">
-                <div className="flex items-center justify-center gap-2 text-lg mb-1 font-black">
-                  <Frown className="w-5 h-5 text-rose-600" />
+              <div className="bg-rose-50 border-2 border-rose-300 p-4 rounded-2xl text-rose-950 font-black text-sm sm:text-base shadow-xs leading-relaxed">
+                <div className="flex items-center justify-center gap-2 text-base sm:text-lg mb-1 font-black">
+                  <Frown className="w-4 h-4 text-rose-600" />
                   <p>«زعلان.. أنت وحش متكلمنيش تاني»</p>
-                  <Frown className="w-5 h-5 text-rose-600" />
+                  <Frown className="w-4 h-4 text-rose-600" />
                 </div>
                 <p className="text-xs text-rose-700 font-extrabold">
-                  {result.score === 19
-                    ? 'جايب 19 من 20 وناقص درجة واحدة؟! كان نفسك تقفل بس برضه زعلان منك!'
-                    : `جايب ${result.score} بس من 20؟! ركز معايا شوية واعرفني أكتر يا عم!`
+                  {result.score === totalQuestions - 1
+                    ? `جايب ${result.score} من ${totalQuestions} وناقص درجة واحدة؟! كان نفسك تقفل بس برضه زعلان منك!`
+                    : `جايب ${result.score} بس من ${totalQuestions}؟! ركز معايا شوية واعرفني أكتر يا عم!`
                   }
                 </p>
               </div>
@@ -215,13 +215,13 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
           </div>
 
           {/* Action buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <button
               onClick={() => {
                 sound.playPop();
                 onNavigate('leaderboard', publicCode);
               }}
-              className="py-3.5 bg-amber-500 hover:bg-amber-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="py-3 bg-amber-500 hover:bg-amber-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Trophy className="w-4 h-4" />
               <span>لوحة المتصدرين</span>
@@ -229,7 +229,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
 
             <button
               onClick={handleShareResult}
-              className="py-3.5 bg-pink-500 hover:bg-pink-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="py-3 bg-pink-500 hover:bg-pink-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Share2 className="w-4 h-4" />
               <span>شير نتيجتك مع الشلة</span>
@@ -240,7 +240,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
                 sound.playPop();
                 onNavigate('create');
               }}
-              className="py-3.5 bg-sky-500 hover:bg-sky-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="py-3 bg-sky-500 hover:bg-sky-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <PlusCircle className="w-4 h-4 text-white" />
               <span>أنشئ اختباري أنا كمان</span>
@@ -249,22 +249,24 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
         </div>
 
         {/* Detailed Breakdown */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-sky-100">
-          <div className="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
+        <div className="bg-white rounded-3xl p-4 sm:p-7 shadow-xl border-2 border-sky-100">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-xl font-black text-sky-950 font-['Cairo']">كشف درجات الـ 20 سؤال</h3>
-              <p className="text-xs text-sky-700 font-bold mt-0.5">
+              <h3 className="text-base sm:text-lg font-black text-sky-950 font-['Cairo']">
+                كشف درجات الـ {totalQuestions} أسئلة
+              </h3>
+              <p className="text-[11px] sm:text-xs text-sky-700 font-bold mt-0.5">
                 شوف إنت اخترت ايه وصاحبك {result.creatorName} كان مختار ايه
               </p>
             </div>
             <div className="flex items-center gap-2 text-xs font-black">
-              <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+              <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{result.score} صح</span>
               </span>
-              <span className="flex items-center gap-1 text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">
+              <span className="flex items-center gap-1 text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200">
                 <XCircle className="w-3.5 h-3.5" />
-                <span>{20 - result.score} غلط</span>
+                <span>{Math.max(0, totalQuestions - result.score)} غلط</span>
               </span>
             </div>
           </div>
