@@ -4,7 +4,7 @@ export const SHARE_FOOTER = `.
 . 
 . 
 . 
-Bestiecheck SM
+Bestiecheck Sm
 © Mohamed Abu AlSaud & Sama ♥`;
 
 export function formatQuizShareText(creatorName: string, url: string): string {
@@ -12,7 +12,7 @@ export function formatQuizShareText(creatorName: string, url: string): string {
 }
 
 export function formatPlatformShareText(url: string): string {
-  return `منصه Bestiecheck Sm لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫\n\n• الرابط:\n${url}\n\n${SHARE_FOOTER}`;
+  return `منصة Bestiecheck Sm لأختبارات الصداقة الفرفوشه أنشئ اختبارك واعرف مين صحابك اللي بجد ومين محتاج يركز معاك..! 👌👫\n\n• الرابط:\n${url}\n\n${SHARE_FOOTER}`;
 }
 
 export function formatResultShareText(creatorName: string, score: number, total: number, url: string): string {

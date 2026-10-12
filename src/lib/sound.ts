@@ -8,6 +8,20 @@ class SoundEffects {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('bestie_sound_muted');
       this.isMuted = saved === 'true';
+
+      // Unlock AudioContext on Chrome for user interaction
+      const unlockAudio = () => {
+        const ctx = this.getContext();
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(ev => {
+          window.removeEventListener(ev, unlockAudio);
+        });
+      };
+      ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(ev => {
+        window.addEventListener(ev, unlockAudio, { once: true, passive: true });
+      });
     }
   }
 
@@ -16,7 +30,11 @@ class SoundEffects {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (AudioCtx) {
-        this.ctx = new AudioCtx();
+        try {
+          this.ctx = new AudioCtx();
+        } catch (e) {
+          console.error('Web Audio API error:', e);
+        }
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
