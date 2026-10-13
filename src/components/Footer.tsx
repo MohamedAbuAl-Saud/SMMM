@@ -121,7 +121,7 @@ export function Footer({ onNavigate, onOpenHelp }: FooterProps) {
             href="https://t.me/A_Y_TR"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer active:translate-y-0.5 group"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer active:translate-y-0.5 group mb-3"
             title="تواصل مع المطور عبر تيليجرام"
           >
             <Send className="w-3.5 h-3.5 text-sky-100 group-hover:-translate-x-0.5 transition-transform" />
@@ -129,9 +129,9 @@ export function Footer({ onNavigate, onOpenHelp }: FooterProps) {
             <span className="text-sky-200 text-xs font-bold">• تيليجرام</span>
           </a>
 
-          {/* Development Rights Box under it */}
-          <div className="mt-3.5 pt-3 border-t border-sky-100 w-full flex items-center justify-center gap-1.5 text-xs font-black text-sky-900 bg-white/80 py-2 px-3 rounded-xl border border-sky-200">
-            <span dir="ltr">© Mohamed Abu AlSaud &amp; Sama ♥</span>
+          <div className="pt-2 border-t border-sky-100 w-full text-center">
+            <p className="text-xs font-black text-sky-900">Bestiecheck SM</p>
+            <p className="text-xs font-bold text-pink-600 mt-0.5">© Mohamed Abu AlSaud & Sama ♥</p>
           </div>
         </div>
 
@@ -143,12 +143,12 @@ export function Footer({ onNavigate, onOpenHelp }: FooterProps) {
             <span>للأصدقاء في كل مكان</span>
           </div>
 
-          <div className="flex items-center gap-1.5 font-black text-slate-700 text-xs bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
-            <span dir="ltr">© Mohamed Abu AlSaud &amp; Sama ♥</span>
+          <div className="flex flex-col items-center sm:items-end gap-0.5 font-black text-slate-700">
+            <span>Bestiecheck SM</span>
+            <span className="text-pink-600 font-bold">© Mohamed Abu AlSaud & Sama ♥</span>
           </div>
         </div>
       </div>
     </footer>
   );
 }
-

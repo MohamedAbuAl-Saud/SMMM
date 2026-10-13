@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileText, ArrowRight } from 'lucide-react';
+import { DevCredits } from '../components/DevCredits.tsx';
 
 interface TermsPageProps {
   onNavigate: (view: string) => void;
@@ -43,7 +44,7 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
             </section>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-slate-100">
+          <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
             <button
               onClick={() => onNavigate('home')}
               className="px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs rounded-xl shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
@@ -52,6 +53,8 @@ export function TermsPage({ onNavigate }: TermsPageProps) {
               <span>العودة للصفحة الرئيسية</span>
             </button>
           </div>
+
+          <DevCredits />
         </div>
       </div>
     </div>

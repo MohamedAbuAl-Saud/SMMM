@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@layer base {
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar, ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
 @layer utilities {
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
@@ -92,53 +104,3 @@
     box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 }
-
-/* Remove side scrollbars completely on html, body, and homepage */
-html, body {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-/* Compact Scrollbar for Help Guide Modal */
-.guide-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #38bdf8 #f0f9ff;
-}
-
-.guide-scrollbar::-webkit-scrollbar {
-  width: 3.5px;
-}
-
-.guide-scrollbar::-webkit-scrollbar-track {
-  background: #f0f9ff;
-  border-radius: 9999px;
-  margin: 20px 0;
-}
-
-.guide-scrollbar::-webkit-scrollbar-thumb {
-  background: #38bdf8;
-  border-radius: 9999px;
-}
-
-.guide-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #0284c7;
-}
-

@@ -10,9 +10,9 @@ import {
 } from '../components/CartoonIllustrations.tsx';
 import { Logo } from '../components/Logo.tsx';
 import { sound } from '../lib/sound.ts';
+import { shareContent } from '../lib/share.ts';
 import { QuestionDraft, StoredQuizItem } from '../lib/types.ts';
 import { DefaultQuestion } from '../server/defaultQuestions.ts';
-import { formatQuizShareText, shareLinkWithImage, SHARE_FOOTER, COPYRIGHT_TEXT } from '../lib/shareHelper.ts';
 import confetti from 'canvas-confetti';
 import {
   ArrowRight,
@@ -409,41 +409,40 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
   };
 
   const getQuizShareMessage = (name: string, url: string) => {
-    return formatQuizShareText(name, url);
+    return `${name} وريني، لو كنت صاحبي/تي  وحبيبي/تي \nبجد ولا متعرفنيش كويس ومش مهتم.. لو درجتك معجبتنيش هديك/ي احلي بلوك.. 🤨 ✨\n\n• الرابط:\n${url}\n\nاسم المنصة Bestiecheck SM\n\nBestiecheck SM\n© Mohamed Abu AlSaud & Sama ♥`;
   };
 
   const handleCopyShareLink = () => {
     if (!createdResult) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
-    const shareText = formatQuizShareText(creatorName, url);
+    const shareText = getQuizShareMessage(creatorName, url);
     navigator.clipboard.writeText(shareText).then(() => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
-    });
+    }).catch(err => console.warn('Clipboard write failed:', err));
   };
 
   const handleNativeShare = async () => {
     if (!createdResult) return;
-    sound.playPop();
     const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
-    const shareText = formatQuizShareText(creatorName, url);
-    const shared = await shareLinkWithImage(`اختبار بيستي تشيك: ${creatorName}`, shareText, url);
-    if (shared) {
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
-      return;
-    }
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, '_blank');
-    handleCopyShareLink();
+    const shareText = getQuizShareMessage(creatorName, url);
+    await shareContent({
+      title: `اختبار بيستي تشيك: ${creatorName}`,
+      text: shareText,
+      url,
+      onSuccess: () => {
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2500);
+      },
+    });
   };
 
   const handleWhatsAppShare = () => {
     if (!createdResult) return;
     sound.playPop();
     const url = `${window.location.origin}/?q=${createdResult.publicCode}`;
-    const shareText = formatQuizShareText(creatorName, url);
+    const shareText = getQuizShareMessage(creatorName, url);
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -1163,12 +1162,6 @@ export function CreateQuizPage({ onNavigate }: CreateQuizPageProps) {
               >
                 العودة للرئيسية
               </button>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-sky-100 flex items-center justify-center">
-              <span dir="ltr" className="text-[11px] font-black text-sky-900 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 inline-block shadow-2xs">
-                © Mohamed Abu AlSaud &amp; Sama ♥
-              </span>
             </div>
           </div>
         )}

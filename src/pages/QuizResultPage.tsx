@@ -9,6 +9,7 @@ import {
 } from '../components/CartoonIllustrations.tsx';
 import { Logo } from '../components/Logo.tsx';
 import { sound } from '../lib/sound.ts';
+import { shareContent } from '../lib/share.ts';
 import { QuizResult } from '../lib/types.ts';
 import confetti from 'canvas-confetti';
 import {
@@ -24,7 +25,6 @@ import {
   Frown,
   Heart
 } from 'lucide-react';
-import { formatResultShareText, shareLinkWithImage, SHARE_FOOTER, COPYRIGHT_TEXT } from '../lib/shareHelper.ts';
 
 interface QuizResultPageProps {
   publicCode: string;
@@ -33,7 +33,6 @@ interface QuizResultPageProps {
 
 export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) {
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [copiedResult, setCopiedResult] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,22 +74,17 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
 
   const handleShareResult = async () => {
     if (!result) return;
-    sound.playPop();
     const totalQ = result.total || 20;
     const shareUrl = `${window.location.origin}/?q=${publicCode}`;
-    const shareText = formatResultShareText(result.creatorName, result.score, totalQ, shareUrl);
+    const shareText = `أنا جبت ${result.score} من ${totalQ} في اختبار الصداقة بتاع ${result.creatorName}! ادخل شوف هتعرف تجيب أعلى مني ولا هتهبد!\n\n• الرابط:\n${shareUrl}\n\nاسم المنصة Bestiecheck SM\n\nBestiecheck SM\n© Mohamed Abu AlSaud & Sama ♥`;
 
-    const shared = await shareLinkWithImage(`نتيجتي في اختبار ${result.creatorName}`, shareText, shareUrl);
-    if (shared) {
-      setCopiedResult(true);
-      setTimeout(() => setCopiedResult(false), 2500);
-      return;
-    }
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, '_blank');
-    navigator.clipboard.writeText(shareText).then(() => {
-      setCopiedResult(true);
-      setTimeout(() => setCopiedResult(false), 2500);
+    await shareContent({
+      title: `نتيجتي في اختبار ${result.creatorName}`,
+      text: shareText,
+      url: shareUrl,
+      onSuccess: () => {
+        alert('تم نسخ نتيجتك والرابط، شير مع الشلة!');
+      },
     });
   };
 
@@ -233,7 +227,7 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
               className="py-3 bg-pink-500 hover:bg-pink-600 active:translate-y-0.5 text-white font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Share2 className="w-4 h-4" />
-              <span>{copiedResult ? 'تم نسخ النتيجة والرابط!' : 'شير نتيجتك مع الشلة'}</span>
+              <span>شير نتيجتك مع الشلة</span>
             </button>
 
             <button
@@ -320,13 +314,6 @@ export function QuizResultPage({ publicCode, onNavigate }: QuizResultPageProps) 
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Development Rights */}
-        <div className="mt-8 text-center pb-4">
-          <span dir="ltr" className="text-xs font-black text-sky-900 bg-white/90 py-1.5 px-4 rounded-full border border-sky-200 inline-block shadow-2xs">
-            © Mohamed Abu AlSaud &amp; Sama ♥
-          </span>
         </div>
       </div>
     </div>
